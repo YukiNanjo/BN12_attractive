@@ -257,7 +257,16 @@ Fp2 skew_frobenius_constant[12][2];
 Fp2 Alpha_1,Alpha_1_inv;
 mpz_t epsilon1,epsilon2;
 mpz_t Two_inv;
-
+//TMP finite field
+Fp TMP1_FP,TMP2_FP,TMP3_FP,TMP4_FP;
+Fp2 TMP1_FP2,TMP2_FP2,TMP3_FP2,TMP4_FP2,TMP5_FP2,TMP6_FP2,TMP7_FP2,TMP8_FP2;
+Fp6 TMP1_FP6,TMP2_FP6,TMP3_FP6,TMP4_FP6;
+Fp12 TMP1_FP12,TMP2_FP12,TMP3_FP12,TMP4_FP12,TMP5_FP12;
+//TMP ecc
+EFp TMP1_EFP,TMP2_EFP;
+EFp2 TMP1_EFP2,TMP2_EFP2;
+EFp6 TMP1_EFP6,TMP2_EFP6;
+EFp12 TMP1_EFP12,TMP2_EFP12;
 /*----------------------------------------------------------------------------*/
 //prototype
 void EFp12_lTP(Fp12 *ANS,EFp12 *T,EFp12 *P,EFp12 *Q,Fp *L);
@@ -285,9 +294,10 @@ void Miller_algo_for_opt_ate(Fp12 *ANS,EFp12 *Q,EFp12 *P);
 void Miller_algo_for_x_ate(Fp12 *ANS,EFp12 *Q,EFp12 *P);
 /*----------------------------------------------------------------------------*/
 //final exp
-void Final_exp_plain(Fp12 *ANS,Fp12 *A);
 void Fp12_pow_X(Fp12 *ANS,Fp12 *A);
-void Final_exp_optimal(Fp12 *ANS,Fp12 *A);
+void Final_exp_easy(Fp12 *ANS,Fp12 *A);
+void Final_exp_hard_plain(Fp12 *ANS,Fp12 *A);
+void Final_exp_hard_optimal(Fp12 *ANS,Fp12 *A);
 /*----------------------------------------------------------------------------*/
 //pairing
 void Plain_ate_pairing(Fp12 *ANS,EFp12 *P,EFp12 *Q);
@@ -334,7 +344,7 @@ void set_curve_parameter();
 /*============================================================================*/
 struct timeval tv_start,tv_end;
 float MILLER_TATE,MILLER_PLAINATE,MILLER_OPTATE,MILLER_XATE;
-float FINALEXP_PLAIN,FINALEXP_OPT_EASY,FINALEXP_OPT_HARD;
+float FINALEXP_EASY,FINALEXP_HARD_PLAIN,FINALEXP_HARD_OPT;
 float G1SCM_PLAIN,G1SCM_2SPLIT,G1SCM_2SPLIT_JSF;
 float G2SCM_PLAIN,G2SCM_2SPLIT,G2SCM_2SPLIT_JSF,G2SCM_4SPLIT;
 float G3EXP_PLAIN,G3EXP_2SPLIT,G3EXP_2SPLIT_JSF,G3EXP_4SPLIT;
@@ -385,5 +395,7 @@ void test_x_ate_pairing();
 void test_G1_SCM();
 void test_G2_SCM();
 void test_G3_EXP();
-void compare_pairings();
-void operation_cost();
+void computation_time();
+void computation_cost();
+void operation_ratio();
+

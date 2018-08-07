@@ -17,7 +17,9 @@ int main(void){
     //test_G1_SCM();
     //test_G2_SCM();
     //test_G3_EXP();
-    compare_pairings();
+    computation_time();
+    //computation_cost();
+    //operation_ratio();
     
     BN12_clear();
     return 0;
@@ -52,9 +54,10 @@ void Fp_set_mpz(Fp *ANS,mpz_t A){
     mpz_set(ANS->x0,A);
 }
 
+//------------------------------------------------------//
+//time
+
 void Fp_set_neg(Fp *ANS,Fp *A){
-    //mpz_cost.mpz_add++;
-    //Fp_cost.Fp_neg++;
     mpz_sub(ANS->x0,prime,A->x0);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
@@ -64,83 +67,147 @@ void Fp_set_random(Fp *ANS,gmp_randstate_t state){
 }
 
 void Fp_mul(Fp *ANS,Fp *A,Fp *B){
-    /*if(mpz_cmp(A->x0,B->x0)==0){
-        mpz_cost.mpz_sqr++;
-        Fp_cost.Fp_sqr++;
-    }else{
-        mpz_cost.mpz_mul++;
-        Fp_cost.Fp_mul++;
-    }*/
     mpz_mul(ANS->x0,A->x0,B->x0);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_mul_ui(Fp *ANS,Fp *A,unsigned long int UI){
-    //Fp_cost.Fp_mul_ui++;
-    //mpz_cost.mpz_mul_ui++;
     mpz_mul_ui(ANS->x0,A->x0,UI);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_mul_mpz(Fp *ANS,Fp *A,mpz_t B){
-    /*if(mpz_cmp(A->x0,B)==0){
-        mpz_cost.mpz_sqr++;
-        Fp_cost.Fp_sqr++;
-    }else{
-        mpz_cost.mpz_mul++;
-        Fp_cost.Fp_mul_mpz++;
-    }*/
     mpz_mul(ANS->x0,A->x0,B);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_add(Fp *ANS,Fp *A,Fp *B){
-    //Fp_cost.Fp_add++;
-    //mpz_cost.mpz_add++;
     mpz_add(ANS->x0,A->x0,B->x0);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_add_ui(Fp *ANS,Fp *A,unsigned long int UI){
-    //Fp_cost.Fp_add_ui++;
-    //mpz_cost.mpz_add_ui++;
     mpz_add_ui(ANS->x0,A->x0,UI);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_add_mpz(Fp *ANS,Fp *A,mpz_t B){
-    //Fp_cost.Fp_add_mpz++;
-    //mpz_cost.mpz_add++;
     mpz_add(ANS->x0,A->x0,B);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_sub(Fp *ANS,Fp *A,Fp *B){
-    //Fp_cost.Fp_add++;
-    //mpz_cost.mpz_add++;
     mpz_sub(ANS->x0,A->x0,B->x0);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_sub_ui(Fp *ANS,Fp *A,unsigned long int UI){
-    //Fp_cost.Fp_add_ui++;
-    //mpz_cost.mpz_add_ui++;
     mpz_sub_ui(ANS->x0,A->x0,UI);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_sub_mpz(Fp *ANS,Fp *A,mpz_t B){
-    //Fp_cost.Fp_add_mpz++;
-    //mpz_cost.mpz_add++;
     mpz_sub(ANS->x0,A->x0,B);
     mpz_mod(ANS->x0,ANS->x0,prime);
 }
 
 void Fp_inv(Fp *ANS,Fp *A){
-    //Fp_cost.Fp_inv++;
-    //mpz_cost.mpz_invert++;
     mpz_invert(ANS->x0,A->x0,prime);
 }
+
+//------------------------------------------------------//
+//cost
+/*
+void Fp_set_neg(Fp *ANS,Fp *A){
+    mpz_cost.mpz_add++;
+    Fp_cost.Fp_neg++;
+    mpz_sub(ANS->x0,prime,A->x0);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_set_random(Fp *ANS,gmp_randstate_t state){
+    mpz_urandomm(ANS->x0,state,prime);
+}
+
+void Fp_mul(Fp *ANS,Fp *A,Fp *B){
+    if(mpz_cmp(A->x0,B->x0)==0){
+        mpz_cost.mpz_sqr++;
+        Fp_cost.Fp_sqr++;
+    }else{
+        mpz_cost.mpz_mul++;
+        Fp_cost.Fp_mul++;
+    }
+    mpz_mul(ANS->x0,A->x0,B->x0);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_mul_ui(Fp *ANS,Fp *A,unsigned long int UI){
+    Fp_cost.Fp_mul_ui++;
+    mpz_cost.mpz_mul_ui++;
+    mpz_mul_ui(ANS->x0,A->x0,UI);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_mul_mpz(Fp *ANS,Fp *A,mpz_t B){
+    if(mpz_cmp(A->x0,B)==0){
+        mpz_cost.mpz_sqr++;
+        Fp_cost.Fp_sqr++;
+    }else{
+        mpz_cost.mpz_mul++;
+        Fp_cost.Fp_mul_mpz++;
+    }
+    mpz_mul(ANS->x0,A->x0,B);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_add(Fp *ANS,Fp *A,Fp *B){
+    Fp_cost.Fp_add++;
+    mpz_cost.mpz_add++;
+    mpz_add(ANS->x0,A->x0,B->x0);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_add_ui(Fp *ANS,Fp *A,unsigned long int UI){
+    Fp_cost.Fp_add_ui++;
+    mpz_cost.mpz_add_ui++;
+    mpz_add_ui(ANS->x0,A->x0,UI);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_add_mpz(Fp *ANS,Fp *A,mpz_t B){
+    Fp_cost.Fp_add_mpz++;
+    mpz_cost.mpz_add++;
+    mpz_add(ANS->x0,A->x0,B);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_sub(Fp *ANS,Fp *A,Fp *B){
+    Fp_cost.Fp_add++;
+    mpz_cost.mpz_add++;
+    mpz_sub(ANS->x0,A->x0,B->x0);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_sub_ui(Fp *ANS,Fp *A,unsigned long int UI){
+    Fp_cost.Fp_add_ui++;
+    mpz_cost.mpz_add_ui++;
+    mpz_sub_ui(ANS->x0,A->x0,UI);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_sub_mpz(Fp *ANS,Fp *A,mpz_t B){
+    Fp_cost.Fp_add_mpz++;
+    mpz_cost.mpz_add++;
+    mpz_sub(ANS->x0,A->x0,B);
+    mpz_mod(ANS->x0,ANS->x0,prime);
+}
+
+void Fp_inv(Fp *ANS,Fp *A){
+    Fp_cost.Fp_inv++;
+    mpz_cost.mpz_invert++;
+    mpz_invert(ANS->x0,A->x0,prime);
+}*/
+//------------------------------------------------------//
 
 int  Fp_legendre(Fp *A){
     return mpz_legendre(A->x0,prime);
@@ -321,7 +388,7 @@ void Fp2_set(Fp2 *ANS,Fp2 *A){
 void Fp2_set_ui(Fp2 *ANS,unsigned long int UI){
     Fp_set_ui(&ANS->x0,UI);
     Fp_set_ui(&ANS->x1,UI);
-}    
+}
 
 void Fp2_set_mpz(Fp2 *ANS,mpz_t A){
     Fp_set_mpz(&ANS->x0,A);
@@ -339,29 +406,17 @@ void Fp2_set_random(Fp2 *ANS,gmp_randstate_t state){
 }
 
 void Fp2_mul(Fp2 *ANS,Fp2 *A,Fp2 *B){
-    Fp tmp1,tmp2,tmp3,tmp4;
-	Fp_init(&tmp1);
-	Fp_init(&tmp2);
-	Fp_init(&tmp3);
-	Fp_init(&tmp4);
-	
-	//set
-	Fp_mul(&tmp1,&A->x0,&B->x0);//a*c	
-	Fp_mul(&tmp2,&A->x1,&B->x1);//b*d
-	Fp_add(&tmp3,&A->x0,&A->x1);//a+b
-	Fp_add(&tmp4,&B->x0,&B->x1);//c+d
-	//x0
-	Fp_sub(&ANS->x0,&tmp1,&tmp2);//a*c+b*d*v
-	//x1
-	Fp_mul(&ANS->x1,&tmp3,&tmp4);//(a+b)(c+d)
-	Fp_sub(&ANS->x1,&ANS->x1,&tmp1);
-	Fp_sub(&ANS->x1,&ANS->x1,&tmp2);
-	
-	//clear
-	Fp_clear(&tmp1);
-	Fp_clear(&tmp2);
-	Fp_clear(&tmp3);
-	Fp_clear(&tmp4);
+    //set
+    Fp_mul(&TMP1_FP,&A->x0,&B->x0);//a*c
+    Fp_mul(&TMP2_FP,&A->x1,&B->x1);//b*d
+    Fp_add(&TMP3_FP,&A->x0,&A->x1);//a+b
+    Fp_add(&TMP4_FP,&B->x0,&B->x1);//c+d
+    //x0
+    Fp_sub(&ANS->x0,&TMP1_FP,&TMP2_FP);//a*c+b*d*v
+    //x1
+    Fp_mul(&ANS->x1,&TMP3_FP,&TMP4_FP);//(a+b)(c+d)
+    Fp_sub(&ANS->x1,&ANS->x1,&TMP1_FP);
+    Fp_sub(&ANS->x1,&ANS->x1,&TMP2_FP);
 }
 
 void Fp2_mul_ui(Fp2 *ANS,Fp2 *A,unsigned long int UI){
@@ -375,44 +430,30 @@ void Fp2_mul_mpz(Fp2 *ANS,Fp2 *A,mpz_t B){
 }
 
 void Fp2_mul_basis(Fp2 *ANS,Fp2 *A){
-    Fp tmp;
-    Fp_init(&tmp);
-    Fp_set(&tmp,&A->x0);
+    Fp_set(&TMP1_FP,&A->x0);
     
-    Fp_sub(&ANS->x0,&tmp,&A->x1);
-    Fp_add(&ANS->x1,&tmp,&A->x1);
-    
-    Fp_clear(&tmp);
+    Fp_sub(&ANS->x0,&TMP1_FP,&A->x1);
+    Fp_add(&ANS->x1,&TMP1_FP,&A->x1);
 }
 
 void Fp2_inv_basis(Fp2 *ANS,Fp2 *A){
-    Fp2 tmp;
-    Fp2_init(&tmp);
-    Fp2_set(&tmp,A);
+    Fp_set(&TMP1_FP,&A->x0);
+    Fp_set(&TMP2_FP,&A->x1);
     
-    Fp_add(&ANS->x0,&tmp.x0,&tmp.x1);
+    Fp_add(&ANS->x0,&TMP1_FP,&TMP2_FP);
     Fp_mul_mpz(&ANS->x0,&ANS->x0,Alpha_1_inv.x0.x0);
-    Fp_sub(&ANS->x1,&tmp.x1,&tmp.x0);
+    Fp_sub(&ANS->x1,&TMP2_FP,&TMP1_FP);
     Fp_mul_mpz(&ANS->x1,&ANS->x1,Alpha_1_inv.x0.x0);
-    
-    Fp2_clear(&tmp);
 }
 
 void Fp2_sqr(Fp2 *ANS,Fp2 *A){
-    Fp tmp1,tmp2;
-    Fp_init(&tmp1);
-    Fp_init(&tmp2);
-    
-    Fp_add(&tmp1,&A->x0,&A->x1);
-	Fp_sub(&tmp2,&A->x0,&A->x1);
-	//x1
-	Fp_mul(&ANS->x1,&A->x0,&A->x1);
-	Fp_add(&ANS->x1,&ANS->x1,&ANS->x1);
-	//x0
-	Fp_mul(&ANS->x0,&tmp1,&tmp2);
-    
-    Fp_clear(&tmp1);
-    Fp_clear(&tmp2);
+    Fp_add(&TMP1_FP,&A->x0,&A->x1);
+    Fp_sub(&TMP2_FP,&A->x0,&A->x1);
+    //x1
+    Fp_mul(&ANS->x1,&A->x0,&A->x1);
+    Fp_add(&ANS->x1,&ANS->x1,&ANS->x1);
+    //x0
+    Fp_mul(&ANS->x0,&TMP1_FP,&TMP2_FP);
 }
 
 void Fp2_add(Fp2 *ANS,Fp2 *A,Fp2 *B){
@@ -446,26 +487,15 @@ void Fp2_sub_mpz(Fp2 *ANS,Fp2 *A,mpz_t B){
 }
 
 void Fp2_inv(Fp2 *ANS,Fp2 *A){
-    Fp c_x0,c_x1,t0,t1;
-    Fp_init(&c_x0);
-    Fp_init(&c_x1);
-    Fp_init(&t0);
-    Fp_init(&t1);
+    Fp_set(&TMP1_FP,&A->x0);
+    Fp_set_neg(&TMP2_FP,&A->x1);
     
-    Fp_set(&c_x0,&A->x0);
-    Fp_set_neg(&c_x1,&A->x1);
-    
-    Fp_mul(&t0,&c_x0,&A->x0);
-    Fp_mul(&t1,&c_x1,&A->x1);
-    Fp_sub(&t0,&t0,&t1);
-    Fp_inv(&t0,&t0);
-    Fp_mul(&ANS->x0,&c_x0,&t0);
-    Fp_mul(&ANS->x1,&c_x1,&t0);
-    
-    Fp_clear(&c_x0);
-    Fp_clear(&c_x1);
-    Fp_clear(&t0);
-    Fp_clear(&t1);
+    Fp_mul(&TMP3_FP,&TMP1_FP,&A->x0);
+    Fp_mul(&TMP4_FP,&TMP2_FP,&A->x1);
+    Fp_sub(&TMP3_FP,&TMP3_FP,&TMP4_FP);
+    Fp_inv(&TMP3_FP,&TMP3_FP);
+    Fp_mul(&ANS->x0,&TMP1_FP,&TMP3_FP);
+    Fp_mul(&ANS->x1,&TMP2_FP,&TMP3_FP);
 }
 
 int  Fp2_legendre(Fp2 *A){
@@ -510,7 +540,7 @@ int  Fp2_isCNR(Fp2 *A){
         Fp2_clear(&tmp);
         return -1;
     }
-
+    
 }
 
 void Fp2_sqrt(Fp2 *ANS,Fp2 *A){
@@ -528,8 +558,8 @@ void Fp2_sqrt(Fp2 *ANS,Fp2 *A){
     mpz_init(z);
     mpz_init(result);
     gmp_randstate_t state;
-	gmp_randinit_default(state);
-	gmp_randseed_ui(state,(unsigned long)time(NULL));
+    gmp_randinit_default(state);
+    gmp_randseed_ui(state,(unsigned long)time(NULL));
     
     Fp2_set_random(&n,state);
     while(Fp2_legendre(&n)!=-1){
@@ -607,7 +637,7 @@ void Fp2_pow(Fp2 *ANS,Fp2 *A,mpz_t scalar){
 
 int  Fp2_cmp(Fp2 *A,Fp2 *B){
     if(Fp_cmp(&A->x0,&B->x0)==0 && Fp_cmp(&A->x1,&B->x1)==0){
-        return 0;   
+        return 0;
     }
     return 1;
 }
@@ -694,54 +724,36 @@ void Fp6_set_random(Fp6 *ANS,gmp_randstate_t state){
 }
 
 void Fp6_mul(Fp6 *ANS,Fp6 *A,Fp6 *B){
-    Fp2 tmp00,tmp11,tmp22,tmp,t0,t1,t2;
-    Fp2_init(&tmp00);
-    Fp2_init(&tmp11);
-    Fp2_init(&tmp22);
-    Fp2_init(&tmp);
-    Fp2_init(&t0);
-    Fp2_init(&t1);
-    Fp2_init(&t2);
-    
     //set
-    Fp2_mul(&tmp00,&A->x0,&B->x0);//x0*y0
-    Fp2_mul(&tmp11,&A->x1,&B->x1);//x1*y1
-    Fp2_mul(&tmp22,&A->x2,&B->x2);//x2*y2
+    Fp2_mul(&TMP1_FP2,&A->x0,&B->x0);//x0*y0
+    Fp2_mul(&TMP2_FP2,&A->x1,&B->x1);//x1*y1
+    Fp2_mul(&TMP3_FP2,&A->x2,&B->x2);//x2*y2
     
-    Fp2_add(&t0,&A->x0,&A->x1);//x0+x1
-    Fp2_add(&tmp,&B->x0,&B->x1);//y0+y1
-    Fp2_mul(&t0,&t0,&tmp);//(x0+x1)(y0+y1)
+    Fp2_add(&TMP5_FP2,&A->x0,&A->x1);//x0+x1
+    Fp2_add(&TMP4_FP2,&B->x0,&B->x1);//y0+y1
+    Fp2_mul(&TMP5_FP2,&TMP5_FP2,&TMP4_FP2);//(x0+x1)(y0+y1)
     
-    Fp2_add(&t1,&A->x1,&A->x2);//x1+x2
-    Fp2_add(&tmp,&B->x1,&B->x2);//y1+y2
-    Fp2_mul(&t1,&t1,&tmp);//(x1+x2)(y1+y2)
+    Fp2_add(&TMP6_FP2,&A->x1,&A->x2);//x1+x2
+    Fp2_add(&TMP4_FP2,&B->x1,&B->x2);//y1+y2
+    Fp2_mul(&TMP6_FP2,&TMP6_FP2,&TMP4_FP2);//(x1+x2)(y1+y2)
     
-    Fp2_add(&t2,&B->x0,&B->x2);//y2+y0
-    Fp2_add(&tmp,&A->x0,&A->x2);//x2+x0
-    Fp2_mul(&t2,&t2,&tmp);//(x2+x0)(y2+y0)
+    Fp2_add(&TMP7_FP2,&B->x0,&B->x2);//y2+y0
+    Fp2_add(&TMP4_FP2,&A->x0,&A->x2);//x2+x0
+    Fp2_mul(&TMP7_FP2,&TMP7_FP2,&TMP4_FP2);//(x2+x0)(y2+y0)
     //x0
-    Fp2_sub(&t1,&t1,&tmp11);
-    Fp2_sub(&t1,&t1,&tmp22);//(x1+x2)(y1+y2)-x1y1-x2y2
-    Fp2_mul_basis(&tmp,&t1);
-    Fp2_add(&ANS->x0,&tmp00,&tmp);
+    Fp2_sub(&TMP6_FP2,&TMP6_FP2,&TMP2_FP2);
+    Fp2_sub(&TMP6_FP2,&TMP6_FP2,&TMP3_FP2);//(x1+x2)(y1+y2)-x1y1-x2y2
+    Fp2_mul_basis(&TMP4_FP2,&TMP6_FP2);
+    Fp2_add(&ANS->x0,&TMP1_FP2,&TMP4_FP2);
     //x1
-    Fp2_sub(&t0,&t0,&tmp00);
-    Fp2_sub(&t0,&t0,&tmp11);
-    Fp2_mul_basis(&tmp,&tmp22);
-    Fp2_add(&ANS->x1,&tmp,&t0);
+    Fp2_sub(&TMP5_FP2,&TMP5_FP2,&TMP1_FP2);
+    Fp2_sub(&TMP5_FP2,&TMP5_FP2,&TMP2_FP2);
+    Fp2_mul_basis(&TMP4_FP2,&TMP3_FP2);
+    Fp2_add(&ANS->x1,&TMP4_FP2,&TMP5_FP2);
     //x2
-    Fp2_sub(&t2,&t2,&tmp00);
-    Fp2_sub(&t2,&t2,&tmp22);
-    Fp2_add(&ANS->x2,&tmp11,&t2);
-    
-    //clear
-    Fp2_clear(&tmp00);
-    Fp2_clear(&tmp11);
-    Fp2_clear(&tmp22);
-    Fp2_clear(&tmp);
-    Fp2_clear(&t0);
-    Fp2_clear(&t1);
-    Fp2_clear(&t2);
+    Fp2_sub(&TMP7_FP2,&TMP7_FP2,&TMP1_FP2);
+    Fp2_sub(&TMP7_FP2,&TMP7_FP2,&TMP3_FP2);
+    Fp2_add(&ANS->x2,&TMP2_FP2,&TMP7_FP2);
 }
 
 void Fp6_mul_ui(Fp6 *ANS,Fp6 *A,unsigned long int UI){
@@ -757,54 +769,39 @@ void Fp6_mul_mpz(Fp6 *ANS,Fp6 *A,mpz_t B){
 }
 
 void Fp6_mul_basis(Fp6 *ANS,Fp6 *A){
-    Fp6 tmp;
-	Fp6_init(&tmp);
-	Fp6_set(&tmp,A);
-	
-	Fp_sub(&ANS->x0.x0,&tmp.x2.x0,&tmp.x2.x1);
-	Fp_add(&ANS->x0.x1,&tmp.x2.x0,&tmp.x2.x1);
-	Fp_set(&ANS->x1.x0,&tmp.x0.x0);
-	Fp_set(&ANS->x1.x1,&tmp.x0.x1);
-	Fp_set(&ANS->x2.x0,&tmp.x1.x0);
-	Fp_set(&ANS->x2.x1,&tmp.x1.x1);
-	
-	Fp6_clear(&tmp);
+    Fp2_set(&TMP1_FP2,&A->x0);
+    Fp2_set(&TMP2_FP2,&A->x1);
+    Fp2_set(&TMP3_FP2,&A->x2);
+    
+    Fp_sub(&ANS->x0.x0,&TMP3_FP2.x0,&TMP3_FP2.x1);
+    Fp_add(&ANS->x0.x1,&TMP3_FP2.x0,&TMP3_FP2.x1);
+    Fp_set(&ANS->x1.x0,&TMP1_FP2.x0);
+    Fp_set(&ANS->x1.x1,&TMP1_FP2.x1);
+    Fp_set(&ANS->x2.x0,&TMP2_FP2.x0);
+    Fp_set(&ANS->x2.x1,&TMP2_FP2.x1);
 }
 
 void Fp6_sqr(Fp6 *ANS,Fp6 *A){
-    Fp2 tmp00,tmp12_2,tmp01_2,tmp22,tmp;
-    Fp2_init(&tmp00);
-    Fp2_init(&tmp22);
-    Fp2_init(&tmp12_2);
-    Fp2_init(&tmp01_2);
-    Fp2_init(&tmp);
-    
-    Fp2_sqr(&tmp00,&A->x0);        //x0^2
-    Fp2_sqr(&tmp22,&A->x2);        //x2^2
-    Fp2_add(&tmp,&A->x1,&A->x1);        //2x1
-    Fp2_mul(&tmp12_2,&tmp,&A->x2);  //2x1x2
-    Fp2_mul(&tmp01_2,&A->x0,&tmp);  //2x0x1
-    Fp2_add(&tmp,&A->x0,&A->x1);        //x0+x1+x2
-    Fp2_add(&tmp,&tmp,&A->x2);
+    Fp2_sqr(&TMP1_FP2,&A->x0);        //x0^2
+    Fp2_sqr(&TMP4_FP2,&A->x2);        //x2^2
+    Fp2_add(&TMP5_FP2,&A->x1,&A->x1);        //2x1
+    Fp2_mul(&TMP2_FP2,&TMP5_FP2,&A->x2);  //2x1x2
+    Fp2_mul(&TMP3_FP2,&A->x0,&TMP5_FP2);  //2x0x1
+    Fp2_add(&TMP5_FP2,&A->x0,&A->x1);        //x0+x1+x2
+    Fp2_add(&TMP5_FP2,&TMP5_FP2,&A->x2);
     
     //x0
-    Fp2_mul_basis(&ANS->x0,&tmp12_2);
-    Fp2_add(&ANS->x0,&ANS->x0,&tmp00);
+    Fp2_mul_basis(&ANS->x0,&TMP2_FP2);
+    Fp2_add(&ANS->x0,&ANS->x0,&TMP1_FP2);
     //x1
-    Fp2_mul_basis(&ANS->x1,&tmp22);
-    Fp2_add(&ANS->x1,&ANS->x1,&tmp01_2);
+    Fp2_mul_basis(&ANS->x1,&TMP4_FP2);
+    Fp2_add(&ANS->x1,&ANS->x1,&TMP3_FP2);
     //x2
-    Fp2_sqr(&ANS->x2,&tmp);
-    Fp2_add(&tmp,&tmp00,&tmp22);
-    Fp2_add(&tmp,&tmp,&tmp12_2);
-    Fp2_add(&tmp,&tmp,&tmp01_2);
-    Fp2_sub(&ANS->x2,&ANS->x2,&tmp);
-    
-    Fp2_clear(&tmp00);
-    Fp2_clear(&tmp22);
-    Fp2_clear(&tmp12_2);
-    Fp2_clear(&tmp01_2);
-    Fp2_clear(&tmp);
+    Fp2_sqr(&ANS->x2,&TMP5_FP2);
+    Fp2_add(&TMP5_FP2,&TMP1_FP2,&TMP4_FP2);
+    Fp2_add(&TMP5_FP2,&TMP5_FP2,&TMP2_FP2);
+    Fp2_add(&TMP5_FP2,&TMP5_FP2,&TMP3_FP2);
+    Fp2_sub(&ANS->x2,&ANS->x2,&TMP5_FP2);
 }
 
 void Fp6_add(Fp6 *ANS,Fp6 *A,Fp6 *B){
@@ -844,54 +841,38 @@ void Fp6_sub_mpz(Fp6 *ANS,Fp6 *A,mpz_t B){
 }
 
 void Fp6_inv(Fp6 *ANS,Fp6 *A){
-    Fp6 barA;
-    Fp6_init(&barA);
-    Fp2 s,t0,t1,t2,t3;
-    Fp2_init(&s);
-    Fp2_init(&t0);
-    Fp2_init(&t1);
-    Fp2_init(&t2);
-    Fp2_init(&t3);
+    Fp2_sqr(&TMP1_FP2,&A->x0);
+    Fp2_sqr(&TMP2_FP2,&A->x1);
+    Fp2_sqr(&TMP3_FP2,&A->x2);
     
-    Fp2_sqr(&t0,&A->x0); //t0=a0^2
-    Fp2_sqr(&t1,&A->x1); //t1=a1^2
-    Fp2_sqr(&t2,&A->x2); //t2=a2^2
+    Fp2_mul(&TMP4_FP2,&A->x1,&A->x2);
+    Fp2_mul_basis(&TMP4_FP2,&TMP4_FP2);
+    Fp2_sub(&TMP6_FP2,&TMP1_FP2,&TMP4_FP2);
     
-    Fp2_mul(&t3,&A->x1,&A->x2);
-    Fp2_mul_basis(&t3,&t3);
-    Fp2_sub(&barA.x0,&t0,&t3);
+    Fp2_mul(&TMP4_FP2,&A->x0,&A->x1);
+    Fp2_mul_basis(&TMP7_FP2,&TMP3_FP2);
+    Fp2_sub(&TMP7_FP2,&TMP7_FP2,&TMP4_FP2);
     
-    Fp2_mul(&t3,&A->x0,&A->x1);
-    Fp2_mul_basis(&barA.x1,&t2);
-    Fp2_sub(&barA.x1,&barA.x1,&t3);
+    Fp2_mul(&TMP4_FP2,&A->x0,&A->x2);
+    Fp2_sub(&TMP8_FP2,&TMP2_FP2,&TMP4_FP2);
     
-    Fp2_mul(&t3,&A->x0,&A->x2);
-    Fp2_sub(&barA.x2,&t1,&t3);
+    Fp2_mul(&TMP1_FP2,&TMP1_FP2,&A->x0);
+    Fp2_mul(&TMP3_FP2,&TMP3_FP2,&A->x2);
+    Fp2_mul_basis(&TMP3_FP2,&TMP3_FP2);
     
-    Fp2_mul(&t0,&t0,&A->x0);
-    Fp2_mul(&t2,&t2,&A->x2);
-    Fp2_mul_basis(&t2,&t2);
+    Fp2_add(&TMP5_FP2,&TMP4_FP2,&TMP4_FP2);
+    Fp2_add(&TMP5_FP2,&TMP5_FP2,&TMP4_FP2);
+    Fp2_sub(&TMP5_FP2,&TMP2_FP2,&TMP5_FP2);
+    Fp2_mul(&TMP5_FP2,&TMP5_FP2,&A->x1);
+    Fp2_add(&TMP5_FP2,&TMP5_FP2,&TMP3_FP2);
+    Fp2_mul_basis(&TMP5_FP2,&TMP5_FP2);
+    Fp2_add(&TMP5_FP2,&TMP5_FP2,&TMP1_FP2);
     
-    Fp2_add(&s,&t3,&t3);
-    Fp2_add(&s,&s,&t3);
-    Fp2_sub(&s,&t1,&s);
-    Fp2_mul(&s,&s,&A->x1);
-    Fp2_add(&s,&s,&t2);
-    Fp2_mul_basis(&s,&s);
-    Fp2_add(&s,&s,&t0);
+    Fp2_inv(&TMP5_FP2,&TMP5_FP2);
     
-    Fp2_inv(&s,&s);
-    
-    Fp2_mul(&ANS->x0,&barA.x0,&s);
-    Fp2_mul(&ANS->x1,&barA.x1,&s);
-    Fp2_mul(&ANS->x2,&barA.x2,&s);
-    
-    Fp6_clear(&barA);
-    Fp2_clear(&s);
-    Fp2_clear(&t0);
-    Fp2_clear(&t1);
-    Fp2_clear(&t2);
-    Fp2_clear(&t3);
+    Fp2_mul(&ANS->x0,&TMP6_FP2,&TMP5_FP2);
+    Fp2_mul(&ANS->x1,&TMP7_FP2,&TMP5_FP2);
+    Fp2_mul(&ANS->x2,&TMP8_FP2,&TMP5_FP2);
 }
 
 int  Fp6_legendre(Fp6 *A){
@@ -997,7 +978,7 @@ void Fp6_pow(Fp6 *ANS,Fp6 *A,mpz_t scalar){
 
 int  Fp6_cmp(Fp6 *A,Fp6 *B){
     if(Fp2_cmp(&A->x0,&B->x0)==0 && Fp2_cmp(&A->x1,&B->x1)==0 && Fp2_cmp(&A->x2,&B->x2)==0){
-        return 0;   
+        return 0;
     }
     return 1;
 }
@@ -1061,7 +1042,7 @@ void Fp12_set_ui(Fp12 *ANS,unsigned long int UI){
 
 void Fp12_set_mpz(Fp12 *ANS,mpz_t A){
     Fp6_set_mpz(&ANS->x0,A);
-    Fp6_set_mpz(&ANS->x1,A);    
+    Fp6_set_mpz(&ANS->x1,A);
 }
 
 void Fp12_set_neg(Fp12 *ANS,Fp12 *A){
@@ -1075,26 +1056,18 @@ void Fp12_set_random(Fp12 *ANS,gmp_randstate_t state){
 }
 
 void Fp12_mul(Fp12 *ANS,Fp12 *A,Fp12 *B){
-    Fp6 tmp1,tmp2;
-	Fp6_init(&tmp1);
-	Fp6_init(&tmp2);
-	
-	//set
-	Fp6_mul(&tmp2,&A->x1,&B->x1);//b*d
-	Fp6_add(&tmp1,&A->x0,&A->x1);//a+b
-	Fp6_add(&ANS->x1,&B->x0,&B->x1);//c+d
-	Fp6_mul(&ANS->x1,&tmp1,&ANS->x1);//(a+b)(c+d)
-	Fp6_mul(&tmp1,&A->x0,&B->x0);//a*c
-	//x0
-	Fp6_mul_basis(&ANS->x0,&tmp2);//b*d*v
-	Fp6_add(&ANS->x0,&ANS->x0,&tmp1);//a*c+b*d*v
-	//x1
-	Fp6_sub(&ANS->x1,&ANS->x1,&tmp1);
-	Fp6_sub(&ANS->x1,&ANS->x1,&tmp2);
-	
-	//clear
-	Fp6_clear(&tmp1);
-	Fp6_clear(&tmp2);
+    //set
+    Fp6_mul(&TMP2_FP6,&A->x1,&B->x1);//b*d
+    Fp6_add(&TMP1_FP6,&A->x0,&A->x1);//a+b
+    Fp6_add(&ANS->x1,&B->x0,&B->x1);//c+d
+    Fp6_mul(&ANS->x1,&TMP1_FP6,&ANS->x1);//(a+b)(c+d)
+    Fp6_mul(&TMP1_FP6,&A->x0,&B->x0);//a*c
+    //x0
+    Fp6_mul_basis(&ANS->x0,&TMP2_FP6);//b*d*v
+    Fp6_add(&ANS->x0,&ANS->x0,&TMP1_FP6);//a*c+b*d*v
+    //x1
+    Fp6_sub(&ANS->x1,&ANS->x1,&TMP1_FP6);
+    Fp6_sub(&ANS->x1,&ANS->x1,&TMP2_FP6);
 }
 
 void Fp12_mul_ui(Fp12 *ANS,Fp12 *A,unsigned long int UI){
@@ -1108,50 +1081,33 @@ void Fp12_mul_mpz(Fp12 *ANS,Fp12 *A,mpz_t B){
 }
 
 void Fp12_sqr(Fp12 *ANS,Fp12 *A){
-    Fp6 tmp1,tmp2,tmp3;
-	Fp6_init(&tmp1);
-	Fp6_init(&tmp2);
-	Fp6_init(&tmp3);
-	
-	Fp6_add(&tmp1,&A->x0,&A->x1);
-	Fp6_mul_basis(&tmp2,&A->x1);
-	Fp6_add(&tmp2,&tmp2,&A->x0);
-	Fp6_mul(&tmp3,&A->x0,&A->x1);
-	
-	//x0
-	Fp6_mul(&ANS->x0,&tmp1,&tmp2);
-	Fp6_sub(&ANS->x0,&ANS->x0,&tmp3);
-	Fp6_mul_basis(&tmp1,&tmp3);
-	Fp6_sub(&ANS->x0,&ANS->x0,&tmp1);
-	//x1
-	Fp6_add(&ANS->x1,&tmp3,&tmp3);
-	
-	Fp6_clear(&tmp1);
-	Fp6_clear(&tmp2);
-	Fp6_clear(&tmp3);
+    Fp6_add(&TMP1_FP6,&A->x0,&A->x1);
+    Fp6_mul_basis(&TMP2_FP6,&A->x1);
+    Fp6_add(&TMP2_FP6,&TMP2_FP6,&A->x0);
+    Fp6_mul(&TMP3_FP6,&A->x0,&A->x1);
+    
+    //x0
+    Fp6_mul(&ANS->x0,&TMP1_FP6,&TMP2_FP6);
+    Fp6_sub(&ANS->x0,&ANS->x0,&TMP3_FP6);
+    Fp6_mul_basis(&TMP1_FP6,&TMP3_FP6);
+    Fp6_sub(&ANS->x0,&ANS->x0,&TMP1_FP6);
+    //x1
+    Fp6_add(&ANS->x1,&TMP3_FP6,&TMP3_FP6);
 }
 
 void Fp12_sqr_cyclotomic(Fp12 *ANS,Fp12 *A){
     //A=a+b*gamma in G3
     //A^2=(1+2b^2*beta)+((a+b)^2-1-b^2*beta-b^2)
-    
-    Fp6 tmp1,tmp2;
-    Fp6_init(&tmp1);
-    Fp6_init(&tmp2);
-    
-    Fp6_add(&tmp1,&A->x0,&A->x1);
-    Fp6_sqr(&tmp1,&tmp1);           //(a+b)^2
-    Fp6_sqr(&tmp2,&A->x1);          //b^2
-    Fp6_mul_basis(&ANS->x1,&tmp2);  //b^2*beta
+    Fp6_add(&TMP1_FP6,&A->x0,&A->x1);
+    Fp6_sqr(&TMP1_FP6,&TMP1_FP6);           //(a+b)^2
+    Fp6_sqr(&TMP2_FP6,&A->x1);          //b^2
+    Fp6_mul_basis(&ANS->x1,&TMP2_FP6);  //b^2*beta
     Fp6_add(&ANS->x0,&ANS->x1,&ANS->x1);
     Fp_add_ui(&ANS->x0.x0.x0,&ANS->x0.x0.x0,1);   //1+2b^2*beta
     
-    Fp6_sub(&ANS->x1,&tmp1,&ANS->x1);
-    Fp6_sub(&ANS->x1,&ANS->x1,&tmp2);
+    Fp6_sub(&ANS->x1,&TMP1_FP6,&ANS->x1);
+    Fp6_sub(&ANS->x1,&ANS->x1,&TMP2_FP6);
     Fp_sub_ui(&ANS->x1.x0.x0,&ANS->x1.x0.x0,1);   //(a+b)^2-1-b^2*beta-b^2
-    
-    Fp6_clear(&tmp1);
-    Fp6_clear(&tmp2);
 }
 
 void Fp12_add(Fp12 *ANS,Fp12 *A,Fp12 *B){
@@ -1185,27 +1141,16 @@ void Fp12_sub_mpz(Fp12 *ANS,Fp12 *A,mpz_t B){
 }
 
 void Fp12_inv(Fp12 *ANS,Fp12 *A){
-    Fp6 c_x0,c_x1,t0,t1;
-    Fp6_init(&c_x0);
-    Fp6_init(&c_x1);
-    Fp6_init(&t0);
-    Fp6_init(&t1);
+    Fp6_set(&TMP1_FP6,&A->x0);
+    Fp6_set_neg(&TMP2_FP6,&A->x1);
     
-    Fp6_set(&c_x0,&A->x0);
-    Fp6_set_neg(&c_x1,&A->x1);
-    
-    Fp6_mul(&t0,&c_x0,&A->x0);
-    Fp6_mul(&t1,&c_x1,&A->x1);
-    Fp6_mul_basis(&t1,&t1);
-    Fp6_add(&t0,&t0,&t1);
-    Fp6_inv(&t0,&t0);
-    Fp6_mul(&ANS->x0,&c_x0,&t0);
-    Fp6_mul(&ANS->x1,&c_x1,&t0);
-    
-    Fp6_clear(&c_x0);
-    Fp6_clear(&c_x1);
-    Fp6_clear(&t0);
-    Fp6_clear(&t1);
+    Fp6_mul(&TMP3_FP6,&TMP1_FP6,&A->x0);
+    Fp6_mul(&TMP4_FP6,&TMP2_FP6,&A->x1);
+    Fp6_mul_basis(&TMP4_FP6,&TMP4_FP6);
+    Fp6_add(&TMP3_FP6,&TMP3_FP6,&TMP4_FP6);
+    Fp6_inv(&TMP3_FP6,&TMP3_FP6);
+    Fp6_mul(&ANS->x0,&TMP1_FP6,&TMP3_FP6);
+    Fp6_mul(&ANS->x1,&TMP2_FP6,&TMP3_FP6);
 }
 
 int  Fp12_legendre(Fp12 *A){
@@ -1245,8 +1190,8 @@ void Fp12_sqrt(Fp12 *ANS,Fp12 *A){
     mpz_init(z);
     mpz_init(result);
     gmp_randstate_t state;
-	gmp_randinit_default (state);
-	gmp_randseed_ui(state,(unsigned long)time(NULL));
+    gmp_randinit_default (state);
+    gmp_randseed_ui(state,(unsigned long)time(NULL));
     
     Fp12_set_random(&n,state);
     while(Fp12_legendre(&n)!=-1){
@@ -1262,7 +1207,7 @@ void Fp12_sqrt(Fp12 *ANS,Fp12 *A){
         e++;
     }
     Fp12_pow(&y,&n,q);
-    mpz_set_ui(z,e);    
+    mpz_set_ui(z,e);
     mpz_sub_ui(exp,q,1);
     mpz_tdiv_q_ui(exp,exp,2);
     Fp12_pow(&x,A,exp);
@@ -1284,7 +1229,7 @@ void Fp12_sqrt(Fp12 *ANS,Fp12 *A){
         Fp12_pow(&t,&y,result);
         Fp12_mul(&y,&t,&t);
         mpz_set_ui(z,m);
-        Fp12_mul(&x,&x,&t); 
+        Fp12_mul(&x,&x,&t);
         Fp12_mul(&k,&k,&y);
     }
     Fp12_set(ANS,&x);
@@ -1323,7 +1268,7 @@ void Fp12_pow(Fp12 *ANS,Fp12 *A,mpz_t scalar){
 
 int  Fp12_cmp(Fp12 *A,Fp12 *B){
     if(Fp6_cmp(&A->x0,&B->x0)==0 && Fp6_cmp(&A->x1,&B->x1)==0){
-        return 0;   
+        return 0;
     }
     return 1;
 }
@@ -1357,15 +1302,12 @@ int  Fp12_cmp_one(Fp12 *A){
 }
 
 void Fp12_frobenius_map_p1(Fp12 *ANS,Fp12 *A){
-	Fp tmp;
-    Fp_init(&tmp);
-    
     //x0
     Fp_set(&ANS->x0.x0.x0,&A->x0.x0.x0);
     Fp_set_neg(&ANS->x0.x0.x1,&A->x0.x0.x1);
-    Fp_set(&tmp,&A->x0.x1.x0);
+    Fp_set(&TMP1_FP,&A->x0.x1.x0);
     Fp_set(&ANS->x0.x1.x0,&A->x0.x1.x1);
-    Fp_set(&ANS->x0.x1.x1,&tmp);
+    Fp_set(&ANS->x0.x1.x1,&TMP1_FP);
     Fp2_mul_mpz(&ANS->x0.x1,&ANS->x0.x1,frobenius_constant[f_p1][1].x1.x0);
     Fp_set(&ANS->x0.x2.x0,&A->x0.x2.x0);
     Fp_set_neg(&ANS->x0.x2.x1,&A->x0.x2.x1);
@@ -1377,15 +1319,13 @@ void Fp12_frobenius_map_p1(Fp12 *ANS,Fp12 *A){
     Fp_set(&ANS->x1.x1.x0,&A->x1.x1.x0);
     Fp_set_neg(&ANS->x1.x1.x1,&A->x1.x1.x1);
     Fp2_mul_mpz(&ANS->x1.x1,&ANS->x1.x1,frobenius_constant[f_p1][4].x0.x0);
-    Fp_add(&tmp,&ANS->x1.x1.x0,&ANS->x1.x1.x1);
+    Fp_add(&TMP1_FP,&ANS->x1.x1.x0,&ANS->x1.x1.x1);
     Fp_sub(&ANS->x1.x1.x0,&ANS->x1.x1.x0,&ANS->x1.x1.x1);
-    Fp_set(&ANS->x1.x1.x1,&tmp);
+    Fp_set(&ANS->x1.x1.x1,&TMP1_FP);
     
     Fp_set(&ANS->x1.x2.x0,&A->x1.x2.x0);
     Fp_set_neg(&ANS->x1.x2.x1,&A->x1.x2.x1);
     Fp2_mul(&ANS->x1.x2,&ANS->x1.x2,&frobenius_constant[f_p1][5]);
-    
-    Fp_clear(&tmp);
 }
 
 void Fp12_frobenius_map_p2(Fp12 *ANS,Fp12 *A){
@@ -1400,15 +1340,12 @@ void Fp12_frobenius_map_p2(Fp12 *ANS,Fp12 *A){
 }
 
 void Fp12_frobenius_map_p3(Fp12 *ANS,Fp12 *A){
-    Fp tmp;
-    Fp_init(&tmp);
-    
     //x0
     Fp_set(&ANS->x0.x0.x0,&A->x0.x0.x0);
     Fp_set_neg(&ANS->x0.x0.x1,&A->x0.x0.x1);
-    Fp_set(&tmp,&A->x0.x1.x0);
+    Fp_set(&TMP1_FP,&A->x0.x1.x0);
     Fp_set(&ANS->x0.x1.x0,&A->x0.x1.x1);
-    Fp_set(&ANS->x0.x1.x1,&tmp);
+    Fp_set(&ANS->x0.x1.x1,&TMP1_FP);
     Fp_set_neg(&ANS->x0.x2.x0,&A->x0.x2.x0);
     Fp_set(&ANS->x0.x2.x1,&A->x0.x2.x1);
     //x1
@@ -1418,14 +1355,12 @@ void Fp12_frobenius_map_p3(Fp12 *ANS,Fp12 *A){
     Fp_set(&ANS->x1.x1.x0,&A->x1.x1.x0);
     Fp_set_neg(&ANS->x1.x1.x1,&A->x1.x1.x1);
     Fp2_mul_mpz(&ANS->x1.x1,&ANS->x1.x1,frobenius_constant[f_p3][4].x0.x0);
-    Fp_add(&tmp,&ANS->x1.x1.x0,&ANS->x1.x1.x1);
+    Fp_add(&TMP1_FP,&ANS->x1.x1.x0,&ANS->x1.x1.x1);
     Fp_sub(&ANS->x1.x1.x0,&ANS->x1.x1.x0,&ANS->x1.x1.x1);
-    Fp_set(&ANS->x1.x1.x1,&tmp);
+    Fp_set(&ANS->x1.x1.x1,&TMP1_FP);
     Fp_set(&ANS->x1.x2.x0,&A->x1.x2.x0);
     Fp_set_neg(&ANS->x1.x2.x1,&A->x1.x2.x1);
     Fp2_mul(&ANS->x1.x2,&ANS->x1.x2,&frobenius_constant[f_p3][5]);
-    
-    Fp_clear(&tmp); 
 }
 
 void Fp12_frobenius_map_p4(Fp12 *ANS,Fp12 *A){
@@ -1550,33 +1485,20 @@ void EFp_ECD(EFp *ANS,EFp *P){
         ANS->infinity=1;
         return;
     }
+    EFp_set(&TMP1_EFP,P);
     
-    EFp Tmp_P;
-    EFp_init(&Tmp_P);
-    EFp_set(&Tmp_P,P);
-    Fp tmp1,tmp2,lambda;
-    Fp_init(&tmp1);
-    Fp_init(&tmp2);
-    Fp_init(&lambda);
-    
-    Fp_add(&tmp1,&Tmp_P.y,&Tmp_P.y);
-    Fp_inv(&tmp1,&tmp1);
-    Fp_mul(&tmp2,&Tmp_P.x,&Tmp_P.x);
-    Fp_add(&lambda,&tmp2,&tmp2);
-    Fp_add(&tmp2,&tmp2,&lambda);
-    Fp_mul(&lambda,&tmp1,&tmp2);
-    Fp_mul(&tmp1,&lambda,&lambda);
-    Fp_add(&tmp2,&Tmp_P.x,&Tmp_P.x);
-    Fp_sub(&ANS->x,&tmp1,&tmp2);
-    Fp_sub(&tmp1,&Tmp_P.x,&ANS->x);
-    Fp_mul(&tmp2,&lambda,&tmp1);
-    Fp_sub(&ANS->y,&tmp2,&Tmp_P.y);
-    
-    //clear
-    Fp_clear(&tmp1);
-    Fp_clear(&tmp2);
-    Fp_clear(&lambda);
-    EFp_clear(&Tmp_P);
+    Fp_add(&TMP1_FP,&TMP1_EFP.y,&TMP1_EFP.y);
+    Fp_inv(&TMP1_FP,&TMP1_FP);
+    Fp_mul(&TMP2_FP,&TMP1_EFP.x,&TMP1_EFP.x);
+    Fp_add(&TMP3_FP,&TMP2_FP,&TMP2_FP);
+    Fp_add(&TMP2_FP,&TMP2_FP,&TMP3_FP);
+    Fp_mul(&TMP3_FP,&TMP1_FP,&TMP2_FP);
+    Fp_mul(&TMP1_FP,&TMP3_FP,&TMP3_FP);
+    Fp_add(&TMP2_FP,&TMP1_EFP.x,&TMP1_EFP.x);
+    Fp_sub(&ANS->x,&TMP1_FP,&TMP2_FP);
+    Fp_sub(&TMP1_FP,&TMP1_EFP.x,&ANS->x);
+    Fp_mul(&TMP2_FP,&TMP3_FP,&TMP1_FP);
+    Fp_sub(&ANS->y,&TMP2_FP,&TMP1_EFP.y);
 }
 
 void EFp_ECA(EFp *ANS,EFp *P1,EFp *P2){
@@ -1596,33 +1518,19 @@ void EFp_ECA(EFp *ANS,EFp *P1,EFp *P2){
         }
     }
     
-    EFp Tmp_P1,Tmp_P2;
-    EFp_init(&Tmp_P1);
-    EFp_set(&Tmp_P1,P1);
-    EFp_init(&Tmp_P2);
-    EFp_set(&Tmp_P2,P2);
-    Fp tmp1,tmp2,lambda;
-    Fp_init(&tmp1);
-    Fp_init(&tmp2);
-    Fp_init(&lambda);
+    EFp_set(&TMP1_EFP,P1);
+    EFp_set(&TMP2_EFP,P2);
     
-    Fp_sub(&tmp1,&Tmp_P2.x,&Tmp_P1.x);
-    Fp_inv(&tmp1,&tmp1);
-    Fp_sub(&tmp2,&Tmp_P2.y,&Tmp_P1.y);
-    Fp_mul(&lambda,&tmp1,&tmp2);
-    Fp_mul(&tmp1,&lambda,&lambda);
-    Fp_sub(&tmp2,&tmp1,&Tmp_P1.x);
-    Fp_sub(&ANS->x,&tmp2,&Tmp_P2.x);
-    Fp_sub(&tmp1,&Tmp_P1.x,&ANS->x);
-    Fp_mul(&tmp2,&lambda,&tmp1);
-    Fp_sub(&ANS->y,&tmp2,&Tmp_P1.y);
-        
-    //clear 
-    Fp_clear(&tmp1);
-    Fp_clear(&tmp2);
-    Fp_clear(&lambda);
-    EFp_clear(&Tmp_P1);
-    EFp_clear(&Tmp_P2);
+    Fp_sub(&TMP1_FP,&TMP2_EFP.x,&TMP1_EFP.x);
+    Fp_inv(&TMP1_FP,&TMP1_FP);
+    Fp_sub(&TMP2_FP,&TMP2_EFP.y,&TMP1_EFP.y);
+    Fp_mul(&TMP3_FP,&TMP1_FP,&TMP2_FP);
+    Fp_mul(&TMP1_FP,&TMP3_FP,&TMP3_FP);
+    Fp_sub(&TMP2_FP,&TMP1_FP,&TMP1_EFP.x);
+    Fp_sub(&ANS->x,&TMP2_FP,&TMP2_EFP.x);
+    Fp_sub(&TMP1_FP,&TMP1_EFP.x,&ANS->x);
+    Fp_mul(&TMP2_FP,&TMP3_FP,&TMP1_FP);
+    Fp_sub(&ANS->y,&TMP2_FP,&TMP1_EFP.y);
 }
 
 void EFp_SCM(EFp *ANS,EFp *P,mpz_t scalar){
@@ -1741,34 +1649,22 @@ void EFp2_ECD(EFp2 *ANS,EFp2 *P){
         return;
     }
     
-    EFp2 Tmp_P;
-    EFp2_init(&Tmp_P);
-    EFp2_set(&Tmp_P,P);
-    Fp2 tmp1,tmp2,lambda;
-    Fp2_init(&tmp1);
-    Fp2_init(&tmp2);
-    Fp2_init(&lambda);
+    EFp2_set(&TMP1_EFP2,P);
     
-    Fp2_add(&tmp1,&Tmp_P.y,&Tmp_P.y);
+    Fp2_add(&TMP1_FP2,&TMP1_EFP2.y,&TMP1_EFP2.y);
+    Fp2_inv(&TMP1_FP2,&TMP1_FP2);
+    Fp2_sqr(&TMP2_FP2,&TMP1_EFP2.x);
+    Fp2_add(&TMP3_FP2,&TMP2_FP2,&TMP2_FP2);
+    Fp2_add(&TMP2_FP2,&TMP2_FP2,&TMP3_FP2);
+    Fp2_mul(&TMP3_FP2,&TMP1_FP2,&TMP2_FP2);
     
-    Fp2_inv(&tmp1,&tmp1);
-    Fp2_sqr(&tmp2,&Tmp_P.x);
-    Fp2_add(&lambda,&tmp2,&tmp2);
-    Fp2_add(&tmp2,&tmp2,&lambda);
-    Fp2_mul(&lambda,&tmp1,&tmp2);
+    Fp2_sqr(&TMP1_FP2,&TMP3_FP2);
+    Fp2_add(&TMP2_FP2,&TMP1_EFP2.x,&TMP1_EFP2.x);
+    Fp2_sub(&ANS->x,&TMP1_FP2,&TMP2_FP2);
     
-    Fp2_sqr(&tmp1,&lambda);
-    Fp2_add(&tmp2,&Tmp_P.x,&Tmp_P.x);
-    Fp2_sub(&ANS->x,&tmp1,&tmp2);
-    
-    Fp2_sub(&tmp1,&Tmp_P.x,&ANS->x);
-    Fp2_mul(&tmp2,&lambda,&tmp1);
-    Fp2_sub(&ANS->y,&tmp2,&Tmp_P.y);
-    
-    Fp2_clear(&tmp1);
-    Fp2_clear(&tmp2);
-    Fp2_clear(&lambda);
-    EFp2_clear(&Tmp_P);
+    Fp2_sub(&TMP1_FP2,&TMP1_EFP2.x,&ANS->x);
+    Fp2_mul(&TMP2_FP2,&TMP3_FP2,&TMP1_FP2);
+    Fp2_sub(&ANS->y,&TMP2_FP2,&TMP1_EFP2.y);
 }
 
 void EFp2_ECA(EFp2 *ANS,EFp2 *P1,EFp2 *P2){
@@ -1788,33 +1684,19 @@ void EFp2_ECA(EFp2 *ANS,EFp2 *P1,EFp2 *P2){
         }
     }
     
-    EFp2 Tmp_P1,Tmp_P2;
-    EFp2_init(&Tmp_P1);
-    EFp2_set(&Tmp_P1,P1);
-    EFp2_init(&Tmp_P2);
-    EFp2_set(&Tmp_P2,P2);
-    Fp2 tmp1,tmp2,lambda;
-    Fp2_init(&tmp1);
-    Fp2_init(&tmp2);
-    Fp2_init(&lambda);
+    EFp2_set(&TMP1_EFP2,P1);
+    EFp2_set(&TMP2_EFP2,P2);
     
-    Fp2_sub(&tmp1,&Tmp_P2.x,&Tmp_P1.x);
-    Fp2_inv(&tmp1,&tmp1);
-    Fp2_sub(&tmp2,&Tmp_P2.y,&Tmp_P1.y);
-    Fp2_mul(&lambda,&tmp1,&tmp2);
-    Fp2_sqr(&tmp1,&lambda);
-    Fp2_sub(&tmp2,&tmp1,&Tmp_P1.x);
-    Fp2_sub(&ANS->x,&tmp2,&Tmp_P2.x);
-    Fp2_sub(&tmp1,&Tmp_P1.x,&ANS->x);
-    Fp2_mul(&tmp2,&lambda,&tmp1);
-    Fp2_sub(&ANS->y,&tmp2,&Tmp_P1.y);
-        
-    //clear 
-    Fp2_clear(&tmp1);
-    Fp2_clear(&tmp2);
-    Fp2_clear(&lambda);
-    EFp2_clear(&Tmp_P1);
-    EFp2_clear(&Tmp_P2);
+    Fp2_sub(&TMP1_FP2,&TMP2_EFP2.x,&TMP1_EFP2.x);
+    Fp2_inv(&TMP1_FP2,&TMP1_FP2);
+    Fp2_sub(&TMP2_FP2,&TMP2_EFP2.y,&TMP1_EFP2.y);
+    Fp2_mul(&TMP3_FP2,&TMP1_FP2,&TMP2_FP2);
+    Fp2_sqr(&TMP1_FP2,&TMP3_FP2);
+    Fp2_sub(&TMP2_FP2,&TMP1_FP2,&TMP1_EFP2.x);
+    Fp2_sub(&ANS->x,&TMP2_FP2,&TMP2_EFP2.x);
+    Fp2_sub(&TMP1_FP2,&TMP1_EFP2.x,&ANS->x);
+    Fp2_mul(&TMP2_FP2,&TMP3_FP2,&TMP1_FP2);
+    Fp2_sub(&ANS->y,&TMP2_FP2,&TMP1_EFP2.y);
 }
 
 void EFp2_SCM(EFp2 *ANS,EFp2 *P,mpz_t scalar){
@@ -1963,34 +1845,23 @@ void EFp6_ECD(EFp6 *ANS,EFp6 *P){
         return;
     }
     
-    EFp6 Tmp_P;
-    EFp6_init(&Tmp_P);
-    EFp6_set(&Tmp_P,P);
-    Fp6 tmp1,tmp2,lambda;
-    Fp6_init(&tmp1);
-    Fp6_init(&tmp2);
-    Fp6_init(&lambda);
+    EFp6_set(&TMP1_EFP6,P);
     
-    Fp6_add(&tmp1,&Tmp_P.y,&Tmp_P.y);
+    Fp6_add(&TMP1_FP6,&TMP1_EFP6.y,&TMP1_EFP6.y);
     
-    Fp6_inv(&tmp1,&tmp1);
-    Fp6_sqr(&tmp2,&Tmp_P.x);
-    Fp6_add(&lambda,&tmp2,&tmp2);
-    Fp6_add(&tmp2,&tmp2,&lambda);
-    Fp6_mul(&lambda,&tmp1,&tmp2);
+    Fp6_inv(&TMP1_FP6,&TMP1_FP6);
+    Fp6_sqr(&TMP2_FP6,&TMP1_EFP6.x);
+    Fp6_add(&TMP3_FP6,&TMP2_FP6,&TMP2_FP6);
+    Fp6_add(&TMP2_FP6,&TMP2_FP6,&TMP3_FP6);
+    Fp6_mul(&TMP3_FP6,&TMP1_FP6,&TMP2_FP6);
     
-    Fp6_sqr(&tmp1,&lambda);
-    Fp6_add(&tmp2,&Tmp_P.x,&Tmp_P.x);
-    Fp6_sub(&ANS->x,&tmp1,&tmp2);
+    Fp6_sqr(&TMP1_FP6,&TMP3_FP6);
+    Fp6_add(&TMP2_FP6,&TMP1_EFP6.x,&TMP1_EFP6.x);
+    Fp6_sub(&ANS->x,&TMP1_FP6,&TMP2_FP6);
     
-    Fp6_sub(&tmp1,&Tmp_P.x,&ANS->x);
-    Fp6_mul(&tmp2,&lambda,&tmp1);
-    Fp6_sub(&ANS->y,&tmp2,&Tmp_P.y);
-    
-    Fp6_clear(&tmp1);
-    Fp6_clear(&tmp2);
-    Fp6_clear(&lambda);
-    EFp6_clear(&Tmp_P);
+    Fp6_sub(&TMP1_FP6,&TMP1_EFP6.x,&ANS->x);
+    Fp6_mul(&TMP2_FP6,&TMP3_FP6,&TMP1_FP6);
+    Fp6_sub(&ANS->y,&TMP2_FP6,&TMP1_EFP6.y);
 }
 
 void EFp6_ECA(EFp6 *ANS,EFp6 *P1,EFp6 *P2){
@@ -2010,33 +1881,19 @@ void EFp6_ECA(EFp6 *ANS,EFp6 *P1,EFp6 *P2){
         }
     }
     
-    EFp6 Tmp_P1,Tmp_P2;
-    EFp6_init(&Tmp_P1);
-    EFp6_set(&Tmp_P1,P1);
-    EFp6_init(&Tmp_P2);
-    EFp6_set(&Tmp_P2,P2);
-    Fp6 tmp1,tmp2,lambda;
-    Fp6_init(&tmp1);
-    Fp6_init(&tmp2);
-    Fp6_init(&lambda);
+    EFp6_set(&TMP1_EFP6,P1);
+    EFp6_set(&TMP2_EFP6,P2);
     
-    Fp6_sub(&tmp1,&Tmp_P2.x,&Tmp_P1.x);
-    Fp6_inv(&tmp1,&tmp1);
-    Fp6_sub(&tmp2,&Tmp_P2.y,&Tmp_P1.y);
-    Fp6_mul(&lambda,&tmp1,&tmp2);
-    Fp6_sqr(&tmp1,&lambda);
-    Fp6_sub(&tmp2,&tmp1,&Tmp_P1.x);
-    Fp6_sub(&ANS->x,&tmp2,&Tmp_P2.x);
-    Fp6_sub(&tmp1,&Tmp_P1.x,&ANS->x);
-    Fp6_mul(&tmp2,&lambda,&tmp1);
-    Fp6_sub(&ANS->y,&tmp2,&Tmp_P1.y);
-        
-    //clear 
-    Fp6_clear(&tmp1);
-    Fp6_clear(&tmp2);
-    Fp6_clear(&lambda);
-    EFp6_clear(&Tmp_P1);
-    EFp6_clear(&Tmp_P2);
+    Fp6_sub(&TMP1_FP6,&TMP2_EFP6.x,&TMP1_EFP6.x);
+    Fp6_inv(&TMP1_FP6,&TMP1_FP6);
+    Fp6_sub(&TMP2_FP6,&TMP2_EFP6.y,&TMP1_EFP6.y);
+    Fp6_mul(&TMP3_FP6,&TMP1_FP6,&TMP2_FP6);
+    Fp6_sqr(&TMP1_FP6,&TMP3_FP6);
+    Fp6_sub(&TMP2_FP6,&TMP1_FP6,&TMP1_EFP6.x);
+    Fp6_sub(&ANS->x,&TMP2_FP6,&TMP2_EFP6.x);
+    Fp6_sub(&TMP1_FP6,&TMP1_EFP6.x,&ANS->x);
+    Fp6_mul(&TMP2_FP6,&TMP3_FP6,&TMP1_FP6);
+    Fp6_sub(&ANS->y,&TMP2_FP6,&TMP1_EFP6.y);
 }
 
 void EFp6_SCM(EFp6 *ANS,EFp6 *P,mpz_t scalar){
@@ -2183,34 +2040,23 @@ void EFp12_ECD(EFp12 *ANS,EFp12 *P){
         return;
     }
     
-    EFp12 Tmp_P;
-    EFp12_init(&Tmp_P);
-    EFp12_set(&Tmp_P,P);
-    Fp12 tmp1,tmp2,lambda;
-    Fp12_init(&tmp1);
-    Fp12_init(&tmp2);
-    Fp12_init(&lambda);
+    EFp12_set(&TMP1_EFP12,P);
     
-    Fp12_add(&tmp1,&Tmp_P.y,&Tmp_P.y);
+    Fp12_add(&TMP1_FP12,&TMP1_EFP12.y,&TMP1_EFP12.y);
     
-    Fp12_inv(&tmp1,&tmp1);
-    Fp12_sqr(&tmp2,&Tmp_P.x);
-    Fp12_add(&lambda,&tmp2,&tmp2);
-    Fp12_add(&tmp2,&tmp2,&lambda);
-    Fp12_mul(&lambda,&tmp1,&tmp2);
+    Fp12_inv(&TMP1_FP12,&TMP1_FP12);
+    Fp12_sqr(&TMP2_FP12,&TMP1_EFP12.x);
+    Fp12_add(&TMP3_FP12,&TMP2_FP12,&TMP2_FP12);
+    Fp12_add(&TMP2_FP12,&TMP2_FP12,&TMP3_FP12);
+    Fp12_mul(&TMP3_FP12,&TMP1_FP12,&TMP2_FP12);
     
-    Fp12_sqr(&tmp1,&lambda);
-    Fp12_add(&tmp2,&Tmp_P.x,&Tmp_P.x);
-    Fp12_sub(&ANS->x,&tmp1,&tmp2);
+    Fp12_sqr(&TMP1_FP12,&TMP3_FP12);
+    Fp12_add(&TMP2_FP12,&TMP1_EFP12.x,&TMP1_EFP12.x);
+    Fp12_sub(&ANS->x,&TMP1_FP12,&TMP2_FP12);
     
-    Fp12_sub(&tmp1,&Tmp_P.x,&ANS->x);
-    Fp12_mul(&tmp2,&lambda,&tmp1);
-    Fp12_sub(&ANS->y,&tmp2,&Tmp_P.y);
-    
-    Fp12_clear(&tmp1);
-    Fp12_clear(&tmp2);
-    Fp12_clear(&lambda);
-    EFp12_clear(&Tmp_P);
+    Fp12_sub(&TMP1_FP12,&TMP1_EFP12.x,&ANS->x);
+    Fp12_mul(&TMP2_FP12,&TMP3_FP12,&TMP1_FP12);
+    Fp12_sub(&ANS->y,&TMP2_FP12,&TMP1_EFP12.y);
 }
 
 void EFp12_ECA(EFp12 *ANS,EFp12 *P1,EFp12 *P2){
@@ -2230,33 +2076,19 @@ void EFp12_ECA(EFp12 *ANS,EFp12 *P1,EFp12 *P2){
         }
     }
     
-    EFp12 Tmp_P1,Tmp_P2;
-    EFp12_init(&Tmp_P1);
-    EFp12_set(&Tmp_P1,P1);
-    EFp12_init(&Tmp_P2);
-    EFp12_set(&Tmp_P2,P2);
-    Fp12 tmp1,tmp2,lambda;
-    Fp12_init(&tmp1);
-    Fp12_init(&tmp2);
-    Fp12_init(&lambda);
+    EFp12_set(&TMP1_EFP12,P1);
+    EFp12_set(&TMP2_EFP12,P2);
     
-    Fp12_sub(&tmp1,&Tmp_P2.x,&Tmp_P1.x);
-    Fp12_inv(&tmp1,&tmp1);
-    Fp12_sub(&tmp2,&Tmp_P2.y,&Tmp_P1.y);
-    Fp12_mul(&lambda,&tmp1,&tmp2);
-    Fp12_sqr(&tmp1,&lambda);
-    Fp12_sub(&tmp2,&tmp1,&Tmp_P1.x);
-    Fp12_sub(&ANS->x,&tmp2,&Tmp_P2.x);
-    Fp12_sub(&tmp1,&Tmp_P1.x,&ANS->x);
-    Fp12_mul(&tmp2,&lambda,&tmp1);
-    Fp12_sub(&ANS->y,&tmp2,&Tmp_P1.y);
-        
-    //clear 
-    Fp12_clear(&tmp1);
-    Fp12_clear(&tmp2);
-    Fp12_clear(&lambda);
-    EFp12_clear(&Tmp_P1);
-    EFp12_clear(&Tmp_P2);
+    Fp12_sub(&TMP1_FP12,&TMP2_EFP12.x,&TMP1_EFP12.x);
+    Fp12_inv(&TMP1_FP12,&TMP1_FP12);
+    Fp12_sub(&TMP2_FP12,&TMP2_EFP12.y,&TMP1_EFP12.y);
+    Fp12_mul(&TMP3_FP12,&TMP1_FP12,&TMP2_FP12);
+    Fp12_sqr(&TMP1_FP12,&TMP3_FP12);
+    Fp12_sub(&TMP2_FP12,&TMP1_FP12,&TMP1_EFP12.x);
+    Fp12_sub(&ANS->x,&TMP2_FP12,&TMP2_EFP12.x);
+    Fp12_sub(&TMP1_FP12,&TMP1_EFP12.x,&ANS->x);
+    Fp12_mul(&TMP2_FP12,&TMP3_FP12,&TMP1_FP12);
+    Fp12_sub(&ANS->y,&TMP2_FP12,&TMP1_EFP12.y);
 }
 
 void EFp12_SCM(EFp12 *ANS,EFp12 *P,mpz_t scalar){
@@ -2496,7 +2328,8 @@ void Miller_prototype(Fp12 *ANS,EFp12 *P,EFp12 *Q){
 
 void Prototype_pairing(Fp12 *ANS,EFp12 *P,EFp12 *Q){
     Miller_prototype(ANS,P,Q);
-    Final_exp_optimal(ANS,ANS);
+    Final_exp_easy(ANS,ANS);
+    Final_exp_hard_plain(ANS,ANS);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -2582,205 +2415,160 @@ void Pseudo_8_sparse_mapping(EFp *P,EFp2 *Q,Fp *L){
 
 void Pseudo_8_sparse_mul(Fp12 *ANS,Fp12 *A,Fp12 *B){
     //A= f0 + f1γ^2 + f2γ^4 + f3γ　+ f4γ^3 + f5γ^5
-	//B= 1                        +  aγ^3 +  bγ^5
-	// x0.x0  x0.x1  x0.x2  x1.x0   x1.x1   x1.x2
-	Fp12 ans;
-	Fp12_init(&ans);
-	Fp2 tmp0,tmp1,tmp2,tmp3;
-	Fp2_init(&tmp0);
-	Fp2_init(&tmp1);
-	Fp2_init(&tmp2);
-	Fp2_init(&tmp3);
-	
-	Fp2_mul(&tmp0,&A->x0.x0,&B->x1.x1);		//tmp0←b4*f0
-	Fp2_mul(&tmp1,&A->x0.x1,&B->x1.x2);		//tmp1←b5*f1
-	Fp2_add(&tmp2,&A->x0.x0,&A->x0.x1);		//tmp2←f0+f1
-	Fp2_add(&tmp3,&B->x1.x1,&B->x1.x2);		//tmp3←b4+b5
-	Fp2_mul(&tmp2,&tmp2,&tmp3);			//tmp2←tmp2*tmp3
-	Fp2_sub(&tmp2,&tmp2,&tmp0);			//tmp2←tmp2-tmp0
-	Fp2_sub(&tmp2,&tmp2,&tmp1);			//tmp2←tmp2-tmp1
-	
-	Fp2_add(&ans.x1.x2,&tmp2,&A->x1.x2);	//ans[γ^5]←tmp2+f5
-	Fp2_add(&ans.x1.x1,&tmp0,&A->x1.x1);	//ans[γ^3]←tmp0+f4
-	Fp2_mul(&tmp2,&A->x0.x2,&B->x1.x2);		//tmp2←b5*f2
-	Fp2_mul_basis(&tmp2,&tmp2);			//tmp2←tmp2*α
-	Fp2_add(&ans.x1.x1,&ans.x1.x1,&tmp2);	//ans[γ^3]←ans[γ^3]+tmp2
-	Fp2_mul(&tmp0,&A->x0.x2,&B->x1.x1);		//tmp0←b4*f2
-	Fp2_add(&tmp0,&tmp0,&tmp1);			//tmp0←tmp0+tmp1
-	Fp2_mul_basis(&tmp0,&tmp0);			//tmp0←tmp0*α
-	Fp2_add(&ans.x1.x0,&tmp0,&A->x1.x0);	//ans[γ]←tmp0+f3
-	
-	Fp2_mul(&tmp0,&A->x1.x0,&B->x1.x1);		//tmp0←b4*f3
-	Fp2_mul(&tmp1,&A->x1.x1,&B->x1.x2);		//tmp1←b5*f4
-	Fp2_add(&tmp2,&A->x1.x0,&A->x1.x1);		//tmp2←f3+f4
-	Fp2_mul(&tmp2,&tmp2,&tmp3);			//tmp2←tmp2+tmp3
-	Fp2_sub(&tmp2,&tmp2,&tmp0);			//tmp2←tmp2-tmp0
-	Fp2_sub(&tmp2,&tmp2,&tmp1);			//tmp2←tmp2-tmp1
-	
-	Fp2_mul_basis(&tmp2,&tmp2);			//tmp2←tmp2*α
-	Fp2_add(&ans.x0.x0,&tmp2,&A->x0.x0);	//ans[1]←tmp2+f0
-	
-	Fp2_mul(&tmp2,&A->x1.x2,&B->x1.x1);		//tmp2←b4*f5
-	Fp2_add(&tmp2,&tmp1,&tmp2);			//tmp2←tmp1+tmp2
-	Fp2_mul_basis(&tmp2,&tmp2);			//tmp2←tmp2*α
-	Fp2_add(&ans.x0.x1,&tmp2,&A->x0.x1);	//ans[γ^2]←tmp2+f1
-	Fp2_mul(&tmp3,&A->x1.x2,&B->x1.x2);		//tmp3←b5*f5
-	Fp2_mul_basis(&tmp3,&tmp3);			//tmp3←tmp3*α
-	
-	Fp2_add(&tmp0,&tmp0,&tmp3);			//tmp0←tmp0+tmp3
-	Fp2_add(&ans.x0.x2,&tmp0,&A->x0.x2);	//ans[γ^2]←tmp0+f2
-	
-	Fp12_set(ANS,&ans);
-	
-	Fp12_clear(&ans);
-	Fp2_clear(&tmp0);
-	Fp2_clear(&tmp1);
-	Fp2_clear(&tmp2);
-	Fp2_clear(&tmp3);
+    //B= 1                        +  aγ^3 +  bγ^5
+    // x0.x0  x0.x1  x0.x2  x1.x0   x1.x1   x1.x2
+    Fp2_mul(&TMP1_FP2,&A->x0.x0,&B->x1.x1);
+    Fp2_mul(&TMP2_FP2,&A->x0.x1,&B->x1.x2);
+    Fp2_add(&TMP3_FP2,&A->x0.x0,&A->x0.x1);
+    Fp2_add(&TMP4_FP2,&B->x1.x1,&B->x1.x2);
+    Fp2_mul(&TMP3_FP2,&TMP3_FP2,&TMP4_FP2);
+    Fp2_sub(&TMP3_FP2,&TMP3_FP2,&TMP1_FP2);
+    Fp2_sub(&TMP3_FP2,&TMP3_FP2,&TMP2_FP2);
+    
+    Fp2_add(&TMP2_FP12.x1.x2,&TMP3_FP2,&A->x1.x2);
+    Fp2_add(&TMP2_FP12.x1.x1,&TMP1_FP2,&A->x1.x1);
+    Fp2_mul(&TMP3_FP2,&A->x0.x2,&B->x1.x2);
+    Fp2_mul_basis(&TMP3_FP2,&TMP3_FP2);
+    Fp2_add(&TMP2_FP12.x1.x1,&TMP2_FP12.x1.x1,&TMP3_FP2);
+    Fp2_mul(&TMP1_FP2,&A->x0.x2,&B->x1.x1);
+    Fp2_add(&TMP1_FP2,&TMP1_FP2,&TMP2_FP2);
+    Fp2_mul_basis(&TMP1_FP2,&TMP1_FP2);
+    Fp2_add(&TMP2_FP12.x1.x0,&TMP1_FP2,&A->x1.x0);
+    
+    Fp2_mul(&TMP1_FP2,&A->x1.x0,&B->x1.x1);
+    Fp2_mul(&TMP2_FP2,&A->x1.x1,&B->x1.x2);
+    Fp2_add(&TMP3_FP2,&A->x1.x0,&A->x1.x1);
+    Fp2_mul(&TMP3_FP2,&TMP3_FP2,&TMP4_FP2);
+    Fp2_sub(&TMP3_FP2,&TMP3_FP2,&TMP1_FP2);
+    Fp2_sub(&TMP3_FP2,&TMP3_FP2,&TMP2_FP2);
+    
+    Fp2_mul_basis(&TMP3_FP2,&TMP3_FP2);
+    Fp2_add(&TMP2_FP12.x0.x0,&TMP3_FP2,&A->x0.x0);
+    
+    Fp2_mul(&TMP3_FP2,&A->x1.x2,&B->x1.x1);
+    Fp2_add(&TMP3_FP2,&TMP2_FP2,&TMP3_FP2);
+    Fp2_mul_basis(&TMP3_FP2,&TMP3_FP2);
+    Fp2_add(&TMP2_FP12.x0.x1,&TMP3_FP2,&A->x0.x1);
+    Fp2_mul(&TMP4_FP2,&A->x1.x2,&B->x1.x2);
+    Fp2_mul_basis(&TMP4_FP2,&TMP4_FP2);
+    
+    Fp2_add(&TMP1_FP2,&TMP1_FP2,&TMP4_FP2);
+    Fp2_add(&TMP2_FP12.x0.x2,&TMP1_FP2,&A->x0.x2);
+    
+    Fp12_set(ANS,&TMP2_FP12);
 }
 
 void ff_ltt(Fp12 *f,EFp2 *T,EFp *P,Fp *L){
-    EFp2 Tmp_T;
-	EFp2_init(&Tmp_T);
-	Fp12 ff,ltt;
-	Fp12_init(&ff);
-	Fp12_init(&ltt);
-	Fp2 A,B,C,D,E;
-	Fp2_init(&A);
-	Fp2_init(&B);
-	Fp2_init(&C);
-	Fp2_init(&D);
-	Fp2_init(&E);
-	EFp2_set(&Tmp_T,T);
-	
-	Fp12_sqr(&ff,f);
-	
-	//ltt
-	Fp2_add(&A,&Tmp_T.y,&Tmp_T.y);		//A=1/(2*T.y)
-	Fp2_inv(&A,&A);
-	Fp2_sqr(&B,&Tmp_T.x);			//B=3(T.x)^2
-	Fp2_add(&C,&B,&B);
-	Fp2_add(&B,&C,&B);
-	Fp2_mul(&C,&A,&B);				//C=A*B
-	Fp2_add(&D,&Tmp_T.x,&Tmp_T.x);		//D=2T.x
-	Fp2_sqr(&T->x,&C);				//next_T.x=C^2-D
-	Fp2_sub(&T->x,&T->x,&D);
-	Fp2_mul(&E,&C,&Tmp_T.x);			//E=C*T.x-T.y
-	Fp2_sub(&E,&E,&Tmp_T.y);
-	Fp2_mul(&T->y,&C,&T->x);			//next_T.y=E-C*next_T.x
-	Fp2_sub(&T->y,&E,&T->y);
-	
-	//set ltt
-	Fp_set_ui(&ltt.x0.x0.x0,1);
-	Fp2_set_neg(&ltt.x1.x2,&C);
-	Fp2_inv_basis(&ltt.x1.x2,&ltt.x1.x2);
-	Fp2_mul_mpz(&ltt.x1.x1,&E,L->x0);
-	Fp2_inv_basis(&ltt.x1.x1,&ltt.x1.x1);
-	
-	Pseudo_8_sparse_mul(f,&ff,&ltt);
-	
-	EFp2_clear(&Tmp_T);
-	Fp2_clear(&A);
-	Fp2_clear(&B);
-	Fp2_clear(&C);
-	Fp2_clear(&D);
-	Fp2_clear(&E);
-	Fp12_clear(&ff);
-	Fp12_clear(&ltt);
+    EFp2_set(&TMP1_EFP2,T);
+    
+    //ltt
+    Fp2_add(&TMP1_FP2,&TMP1_EFP2.y,&TMP1_EFP2.y);
+    Fp2_inv(&TMP1_FP2,&TMP1_FP2);
+    Fp2_sqr(&TMP2_FP2,&TMP1_EFP2.x);
+    Fp2_add(&TMP3_FP2,&TMP2_FP2,&TMP2_FP2);
+    Fp2_add(&TMP2_FP2,&TMP3_FP2,&TMP2_FP2);
+    Fp2_mul(&TMP3_FP2,&TMP1_FP2,&TMP2_FP2);
+    Fp2_add(&TMP4_FP2,&TMP1_EFP2.x,&TMP1_EFP2.x);
+    Fp2_sqr(&T->x,&TMP3_FP2);
+    Fp2_sub(&T->x,&T->x,&TMP4_FP2);
+    Fp2_mul(&TMP5_FP2,&TMP3_FP2,&TMP1_EFP2.x);
+    Fp2_sub(&TMP5_FP2,&TMP5_FP2,&TMP1_EFP2.y);
+    Fp2_mul(&T->y,&TMP3_FP2,&T->x);
+    Fp2_sub(&T->y,&TMP5_FP2,&T->y);
+    
+    //set ltt
+    Fp_set_ui(&TMP1_FP12.x0.x0.x0,1);
+    Fp2_set_neg(&TMP1_FP12.x1.x2,&TMP3_FP2);
+    Fp2_inv_basis(&TMP1_FP12.x1.x2,&TMP1_FP12.x1.x2);
+    Fp2_mul_mpz(&TMP1_FP12.x1.x1,&TMP5_FP2,L->x0);
+    Fp2_inv_basis(&TMP1_FP12.x1.x1,&TMP1_FP12.x1.x1);
+    
+    Fp12_sqr(f,f);
+    Pseudo_8_sparse_mul(f,f,&TMP1_FP12);
 }
 
 void f_ltq(Fp12 *f,EFp2 *T,EFp2 *Q,EFp *P,Fp *L){
-    EFp2 Tmp_T;
-	EFp2_init(&Tmp_T);
-	Fp12 ltq;
-	Fp12_init(&ltq);
-	Fp2 A,B,C,D,E;
-	Fp2_init(&A);
-	Fp2_init(&B);
-	Fp2_init(&C);
-	Fp2_init(&D);
-	Fp2_init(&E);
-	EFp2_set(&Tmp_T,T);
-		
-	//ltq
-	Fp2_sub(&A,&Q->x,&Tmp_T.x);		//A=(Q->x-T.x)^-1
-	Fp2_inv(&A,&A);
-	Fp2_sub(&B,&Q->y,&Tmp_T.y);		//B=(Q->y-T.y)
-	Fp2_mul(&C,&A,&B);			//C=A*B
-	Fp2_add(&D,&Tmp_T.x,&Q->x);		//D=Q->x+T.x
-	Fp2_sqr(&T->x,&C);			//next_T.x=C^2-D
-	Fp2_sub(&T->x,&T->x,&D);
-	Fp2_mul(&E,&C,&Tmp_T.x);		//E=C*T.x-T.y
-	Fp2_sub(&E,&E,&Tmp_T.y);
-	Fp2_mul(&T->y,&C,&T->x);		//next_T.y=E-C*next_T.x
-	Fp2_sub(&T->y,&E,&T->y);
-	
-	//set ltq
-	Fp_set_ui(&ltq.x0.x0.x0,1);
-	Fp2_set_neg(&ltq.x1.x2,&C);
-	Fp2_inv_basis(&ltq.x1.x2,&ltq.x1.x2);
-	Fp2_mul_mpz(&ltq.x1.x1,&E,L->x0);
-	Fp2_inv_basis(&ltq.x1.x1,&ltq.x1.x1);
-	
-	Pseudo_8_sparse_mul(f,f,&ltq);
-	
-	EFp2_clear(&Tmp_T);
-	Fp12_clear(&ltq);
-	Fp2_clear(&A);
-	Fp2_clear(&B);
-	Fp2_clear(&C);
-	Fp2_clear(&D);
+    EFp2_set(&TMP1_EFP2,T);
+    
+    //ltq
+    Fp2_sub(&TMP1_FP2,&Q->x,&TMP1_EFP2.x);
+    Fp2_inv(&TMP1_FP2,&TMP1_FP2);
+    Fp2_sub(&TMP2_FP2,&Q->y,&TMP1_EFP2.y);
+    Fp2_mul(&TMP3_FP2,&TMP1_FP2,&TMP2_FP2);
+    Fp2_add(&TMP4_FP2,&TMP1_EFP2.x,&Q->x);
+    Fp2_sqr(&T->x,&TMP3_FP2);
+    Fp2_sub(&T->x,&T->x,&TMP4_FP2);
+    Fp2_mul(&TMP5_FP2,&TMP3_FP2,&TMP1_EFP2.x);
+    Fp2_sub(&TMP5_FP2,&TMP5_FP2,&TMP1_EFP2.y);
+    Fp2_mul(&T->y,&TMP3_FP2,&T->x);
+    Fp2_sub(&T->y,&TMP5_FP2,&T->y);
+    
+    //set ltq
+    Fp_set_ui(&TMP1_FP12.x0.x0.x0,1);
+    Fp2_set_neg(&TMP1_FP12.x1.x2,&TMP3_FP2);
+    Fp2_inv_basis(&TMP1_FP12.x1.x2,&TMP1_FP12.x1.x2);
+    Fp2_mul_mpz(&TMP1_FP12.x1.x1,&TMP5_FP2,L->x0);
+    Fp2_inv_basis(&TMP1_FP12.x1.x1,&TMP1_FP12.x1.x1);
+    
+    Pseudo_8_sparse_mul(f,f,&TMP1_FP12);
 }
 
 /*----------------------------------------------------------------------------*/
 //miller
 void Miller_algo_for_plain_ate(Fp12 *ANS,EFp12 *Q,EFp12 *P){
+    gettimeofday(&tv_start,NULL);
+    
     EFp12 Test;
-	EFp12_init(&Test);
-	EFp2 T;
-	EFp2_init(&T);
-	EFp2 mapped_Q;
-	EFp2_init(&mapped_Q);
-	EFp mapped_P;
-	EFp_init(&mapped_P);
-	Fp12 f;
-	Fp12_init(&f);
-	Fp L;
-	Fp_init(&L);
-	mpz_t loop;
-	mpz_init(loop);
-	mpz_sub_ui(loop,trace,1);
-	int i,length;
-	length=(int)mpz_sizeinbase(loop,2);
-	char binary[length];
-	mpz_get_str(binary,2,loop);
-	
-	EFp12_to_EFp(&mapped_P,P);
-	EFp12_to_EFp2(&mapped_Q,Q);
-	Pseudo_8_sparse_mapping(&mapped_P,&mapped_Q,&L);
-	EFp2_set(&T,&mapped_Q);     //set T
-	Fp_set_ui(&f.x0.x0.x0,1);   //set f
-	
-	//miller
+    EFp12_init(&Test);
+    EFp2 T;
+    EFp2_init(&T);
+    EFp2 mapped_Q;
+    EFp2_init(&mapped_Q);
+    EFp mapped_P;
+    EFp_init(&mapped_P);
+    Fp12 f;
+    Fp12_init(&f);
+    Fp L;
+    Fp_init(&L);
+    mpz_t loop;
+    mpz_init(loop);
+    mpz_sub_ui(loop,trace,1);
+    int i,length;
+    length=(int)mpz_sizeinbase(loop,2);
+    char binary[length];
+    mpz_get_str(binary,2,loop);
+    
+    EFp12_to_EFp(&mapped_P,P);
+    EFp12_to_EFp2(&mapped_Q,Q);
+    Pseudo_8_sparse_mapping(&mapped_P,&mapped_Q,&L);
+    EFp2_set(&T,&mapped_Q);     //set T
+    Fp_set_ui(&f.x0.x0.x0,1);   //set f
+    
+    //miller
     for(i=1; binary[i]!='\0'; i++){
-		ff_ltt(&f,&T,&mapped_P,&L);
-		if(binary[i]=='1'){
-			f_ltq(&f,&T,&mapped_Q,&mapped_P,&L);
-		}
-	}
-	
-	Fp12_set(ANS,&f);
-	
-	Fp12_clear(&f);
-	EFp2_clear(&T);
-	EFp2_clear(&mapped_Q);
-	EFp_clear(&mapped_P);
-	Fp_clear(&L);
-	EFp12_clear(&Test);
-	mpz_clear(loop);
+        ff_ltt(&f,&T,&mapped_P,&L);
+        if(binary[i]=='1'){
+            f_ltq(&f,&T,&mapped_Q,&mapped_P,&L);
+        }
+    }
+    
+    Fp12_set(ANS,&f);
+    
+    Fp12_clear(&f);
+    EFp2_clear(&T);
+    EFp2_clear(&mapped_Q);
+    EFp_clear(&mapped_P);
+    Fp_clear(&L);
+    EFp12_clear(&Test);
+    mpz_clear(loop);
+    
+    gettimeofday(&tv_end,NULL);
+    MILLER_PLAINATE=timedifference_msec(tv_start,tv_end);
 }
 
 void Miller_algo_for_opt_ate(Fp12 *ANS,EFp12 *Q,EFp12 *P){
+    gettimeofday(&tv_start,NULL);
+    
     EFp12 Buf;
     EFp12_init(&Buf);
     EFp2 T;
@@ -2843,9 +2631,14 @@ void Miller_algo_for_opt_ate(Fp12 *ANS,EFp12 *Q,EFp12 *P){
     EFp2_clear(&mapped_Q2_neg);
     EFp_clear(&mapped_P);
     Fp_clear(&L);
+    
+    gettimeofday(&tv_end,NULL);
+    MILLER_OPTATE=timedifference_msec(tv_start,tv_end);
 }
 
 void Miller_algo_for_x_ate(Fp12 *ANS,EFp12 *Q,EFp12 *P){
+    gettimeofday(&tv_start,NULL);
+    
     EFp12 Buf;
     EFp12_init(&Buf);
     EFp2 T;
@@ -2911,95 +2704,97 @@ void Miller_algo_for_x_ate(Fp12 *ANS,EFp12 *Q,EFp12 *P){
     EFp2_clear(&mapped_Q2);
     EFp_clear(&mapped_P);
     Fp_clear(&L);
+    
+    gettimeofday(&tv_end,NULL);
+    MILLER_XATE=timedifference_msec(tv_start,tv_end);
 }
 
 /*----------------------------------------------------------------------------*/
 //final exp
-void Final_exp_plain(Fp12 *ANS,Fp12 *A){
-    Fp12 Tmp,Buf1,Buf2;
-	Fp12_init(&Tmp);
-	Fp12_set(&Tmp,A);
-	Fp12_init(&Buf1);
-	Fp12_init(&Buf2);
-	mpz_t exp,buf;
-	mpz_init(exp);
-	mpz_init(buf);
-	
-	Fp12_frobenius_map_p6(&Buf1,&Tmp);
-	Fp12_inv(&Buf2,&Tmp);
-	Fp12_mul(&Tmp,&Buf1,&Buf2);
-	
-	Fp12_frobenius_map_p2(&Buf1,&Tmp);
-	Fp12_mul(&Tmp,&Buf1,&Tmp);
-	
-	mpz_pow_ui(exp,prime,4);
-	mpz_pow_ui(buf,prime,2);
-	mpz_sub(exp,exp,buf);
-	mpz_add_ui(exp,exp,1);
-	mpz_tdiv_q(exp,exp,order);
-	Fp12_pow(ANS,&Tmp,exp);
-	
-	mpz_clear(exp);
-	mpz_clear(buf);
-	Fp12_clear(&Tmp);
-	Fp12_clear(&Buf1);
-	Fp12_clear(&Buf2);
-}
-
 void Fp12_pow_X(Fp12 *ANS,Fp12 *A){
     int i;
     Fp12 tmp,A_inv;
-	Fp12_init(&tmp);
-	Fp12_init(&A_inv);
-	Fp12_frobenius_map_p6(&A_inv,A);
-	
-	Fp12_set(&tmp,A);
-	for(i=X_length-1; i>=0; i--){
-		switch(X_binary[i]){
-			case 0:
-				Fp12_sqr_cyclotomic(&tmp,&tmp);
-				break;
-			case 1:
-				Fp12_sqr_cyclotomic(&tmp,&tmp);
-				Fp12_mul(&tmp,&tmp,A);
-				break;
-			case -1:
-				Fp12_sqr_cyclotomic(&tmp,&tmp);
-				Fp12_mul(&tmp,&tmp,&A_inv);
-				break;
-			default:
-				break;
-		}
-	}
-	Fp12_set(ANS,&tmp);
-	
-	Fp12_clear(&tmp);
-	Fp12_clear(&A_inv);
+    Fp12_init(&tmp);
+    Fp12_init(&A_inv);
+    Fp12_frobenius_map_p6(&A_inv,A);
+    
+    Fp12_set(&tmp,A);
+    for(i=X_length-1; i>=0; i--){
+        switch(X_binary[i]){
+            case 0:
+                Fp12_sqr_cyclotomic(&tmp,&tmp);
+                break;
+            case 1:
+                Fp12_sqr_cyclotomic(&tmp,&tmp);
+                Fp12_mul(&tmp,&tmp,A);
+                break;
+            case -1:
+                Fp12_sqr_cyclotomic(&tmp,&tmp);
+                Fp12_mul(&tmp,&tmp,&A_inv);
+                break;
+            default:
+                break;
+        }
+    }
+    Fp12_set(ANS,&tmp);
+    
+    Fp12_clear(&tmp);
+    Fp12_clear(&A_inv);
 }
 
-void Final_exp_optimal(Fp12 *ANS,Fp12 *A){
+void Final_exp_easy(Fp12 *ANS,Fp12 *A){
+    gettimeofday(&tv_start,NULL);
+    
+    Fp12 t0,t1;
+    Fp12_init(&t0);
+    Fp12_init(&t1);
+    
+    //f←f^(p^6)*f^-1
+    Fp12_frobenius_map_p6(&t0,A);//f^(p^6)
+    Fp12_inv(&t1,A);//f^-1
+    Fp12_mul(ANS,&t0,&t1);//f^(p^6)*f^-1
+    
+    //f←f^(p^2)*f
+    Fp12_frobenius_map_p2(&t0,ANS);//f^(p^2)
+    Fp12_mul(ANS,&t0,ANS);//f^(p^2)*f
+    
+    
+    Fp12_clear(&t0);
+    Fp12_clear(&t1);
+    gettimeofday(&tv_end,NULL);
+    FINALEXP_EASY=timedifference_msec(tv_start,tv_end);
+}
+
+void Final_exp_hard_plain(Fp12 *ANS,Fp12 *A){
+    gettimeofday(&tv_start,NULL);
+    
+    mpz_t exp,buf;
+    mpz_init(exp);
+    mpz_init(buf);
+    
+    mpz_pow_ui(exp,prime,4);
+    mpz_pow_ui(buf,prime,2);
+    mpz_sub(exp,exp,buf);
+    mpz_add_ui(exp,exp,1);
+    mpz_tdiv_q(exp,exp,order);
+    Fp12_pow(ANS,A,exp);
+    
+    mpz_clear(exp);
+    mpz_clear(buf);
+    
+    gettimeofday(&tv_end,NULL);
+    FINALEXP_HARD_PLAIN=timedifference_msec(tv_start,tv_end);
+}
+
+void Final_exp_hard_optimal(Fp12 *ANS,Fp12 *A){
+    gettimeofday(&tv_start,NULL);
+    
     Fp12 t0,t1,t2,t3,t4;
     Fp12_init(&t0);
     Fp12_init(&t1);
     Fp12_init(&t2);
     Fp12_init(&t3);
     Fp12_init(&t4);
-    
-    gettimeofday(&tv_start,NULL);
-    
-    //f←f^(p^6)*f^-1
-    Fp12_frobenius_map_p6(&t0,A);//f^(p^6)
-    Fp12_inv(&t1,A);//f^-1
-    Fp12_mul(A,&t0,&t1);//f^(p^6)*f^-1
-    
-    //f←f^(p^2)*f
-    Fp12_frobenius_map_p2(&t0,A);//f^(p^2)
-    Fp12_mul(A,&t0,A);//f^(p^2)*f
-    
-    gettimeofday(&tv_end,NULL);
-    FINALEXP_OPT_EASY=timedifference_msec(tv_start,tv_end);
-    
-    gettimeofday(&tv_start,NULL);
     
     Fp12_pow_X(&t0,A);   //t0←f^(-u)
     Fp12_frobenius_map_p6(&t0,&t0);
@@ -3027,55 +2822,34 @@ void Final_exp_optimal(Fp12 *ANS,Fp12 *A){
     Fp12_frobenius_map_p3(&t2,&t2);         //t2←t2^(p^3)
     Fp12_mul(ANS,&t2,&t0);              //t0←t2*t0
     
-    gettimeofday(&tv_end,NULL);
-    FINALEXP_OPT_HARD=timedifference_msec(tv_start,tv_end);
-    
     Fp12_clear(&t0);
     Fp12_clear(&t1);
     Fp12_clear(&t2);
     Fp12_clear(&t3);
     Fp12_clear(&t4);
+    
+    gettimeofday(&tv_end,NULL);
+    FINALEXP_HARD_OPT=timedifference_msec(tv_start,tv_end);
 }
 
 /*----------------------------------------------------------------------------*/
 //pairing
 void Plain_ate_pairing(Fp12 *ANS,EFp12 *P,EFp12 *Q){
-    //Miller's Algo.
-    //Init_mpz_Cost(&mpz_cost);
-    gettimeofday(&tv_start,NULL);
     Miller_algo_for_plain_ate(ANS,P,Q);
-    gettimeofday(&tv_end,NULL);
-    MILLER_PLAINATE=timedifference_msec(tv_start,tv_end);
-    //Print_mpz_Cost(&mpz_cost,"Miller's Algo.\n");
-    
-    //Final Exp.
-    Final_exp_optimal(ANS,ANS);
+    Final_exp_easy(ANS,ANS);
+    Final_exp_hard_plain(ANS,ANS);
 }
 
 void Opt_ate_pairing(Fp12 *ANS,EFp12 *P,EFp12 *Q){
-    //Miller's Algo.
-    //Init_mpz_Cost(&mpz_cost);
-    gettimeofday(&tv_start,NULL);
     Miller_algo_for_opt_ate(ANS,P,Q);
-    gettimeofday(&tv_end,NULL);
-    MILLER_OPTATE=timedifference_msec(tv_start,tv_end);
-    //Print_mpz_Cost(&mpz_cost,"Miller's Algo.\n");
-    
-    //Final Exp.
-    gettimeofday(&tv_start,NULL);
-    Final_exp_optimal(ANS,ANS);
+    Final_exp_easy(ANS,ANS);
+    Final_exp_hard_optimal(ANS,ANS);
 }
 
 void X_ate_pairing(Fp12 *ANS,EFp12 *P,EFp12 *Q){
-    //Miller's Algo.
-    //Init_mpz_Cost(&mpz_cost);
-    gettimeofday(&tv_start,NULL);
     Miller_algo_for_x_ate(ANS,P,Q);
-    gettimeofday(&tv_end,NULL);
-    MILLER_XATE=timedifference_msec(tv_start,tv_end);
-    //Print_mpz_Cost(&mpz_cost,"Miller's Algo.\n");
-    
-    Final_exp_optimal(ANS,ANS);
+    Final_exp_easy(ANS,ANS);
+    Final_exp_hard_optimal(ANS,ANS);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -4161,6 +3935,37 @@ void init_parameters(){
             Fp2_init(&skew_frobenius_constant[i][j]);
         }
     }
+    
+    //TMP finite field
+    Fp_init(&TMP1_FP);
+    Fp_init(&TMP2_FP);
+    Fp_init(&TMP3_FP);
+    Fp_init(&TMP4_FP);
+    Fp2_init(&TMP1_FP2);
+    Fp2_init(&TMP2_FP2);
+    Fp2_init(&TMP3_FP2);
+    Fp2_init(&TMP4_FP2);
+    Fp2_init(&TMP5_FP2);
+    Fp2_init(&TMP6_FP2);
+    Fp2_init(&TMP7_FP2);
+    Fp2_init(&TMP8_FP2);
+    Fp6_init(&TMP1_FP6);
+    Fp6_init(&TMP2_FP6);
+    Fp6_init(&TMP3_FP6);
+    Fp6_init(&TMP4_FP6);
+    Fp12_init(&TMP1_FP12);
+    Fp12_init(&TMP2_FP12);
+    Fp12_init(&TMP3_FP12);
+    Fp12_init(&TMP4_FP12);
+    //TMP ecc
+    EFp_init(&TMP1_EFP);
+    EFp_init(&TMP2_EFP);
+    EFp2_init(&TMP1_EFP2);
+    EFp2_init(&TMP2_EFP2);
+    EFp6_init(&TMP1_EFP6);
+    EFp6_init(&TMP2_EFP6);
+    EFp12_init(&TMP1_EFP12);
+    EFp12_init(&TMP2_EFP12);
 }
 
 void generate_X(){
@@ -4583,6 +4388,37 @@ void BN12_clear(){
             Fp2_clear(&skew_frobenius_constant[i][j]);
         }
     }
+    
+    //TMP finite field
+    Fp_clear(&TMP1_FP);
+    Fp_clear(&TMP2_FP);
+    Fp_clear(&TMP3_FP);
+    Fp_clear(&TMP4_FP);
+    Fp2_clear(&TMP1_FP2);
+    Fp2_clear(&TMP2_FP2);
+    Fp2_clear(&TMP3_FP2);
+    Fp2_clear(&TMP4_FP2);
+    Fp2_clear(&TMP5_FP2);
+    Fp2_clear(&TMP6_FP2);
+    Fp2_clear(&TMP7_FP2);
+    Fp2_clear(&TMP8_FP2);
+    Fp6_clear(&TMP1_FP6);
+    Fp6_clear(&TMP2_FP6);
+    Fp6_clear(&TMP3_FP6);
+    Fp6_clear(&TMP4_FP6);
+    Fp12_clear(&TMP1_FP12);
+    Fp12_clear(&TMP2_FP12);
+    Fp12_clear(&TMP3_FP12);
+    Fp12_clear(&TMP4_FP12);
+    //TMP ecc
+    EFp_clear(&TMP1_EFP);
+    EFp_clear(&TMP2_EFP);
+    EFp2_clear(&TMP1_EFP2);
+    EFp2_clear(&TMP2_EFP2);
+    EFp6_clear(&TMP1_EFP6);
+    EFp6_clear(&TMP2_EFP6);
+    EFp12_clear(&TMP1_EFP12);
+    EFp12_clear(&TMP2_EFP12);
 }
 
 /*============================================================================*/
@@ -4912,7 +4748,7 @@ void test_plain_ate_pairing(){
     gmp_randinit_default (state);
     gmp_randseed_ui(state,(unsigned long)time(NULL));
     mpz_urandomm(s1,state,order);
-	mpz_urandomm(s2,state,order);
+    mpz_urandomm(s2,state,order);
     mpz_mul(s12,s1,s2);
     mpz_mod(s12,s12,order);
     
@@ -4933,9 +4769,9 @@ void test_plain_ate_pairing(){
     Plain_ate_pairing(&Z,&Q,&P);
     Fp12_pow(&test1,&Z,s12);
     printf("Miller's Algo. (Plain-ate) : %.2f[ms]\n",MILLER_PLAINATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_PLAIN);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_PLAIN);
     Fp12_printf(&test1,"");
     printf("\n\n");
     
@@ -4944,9 +4780,9 @@ void test_plain_ate_pairing(){
     printf("plain_ate([s2]Q,[s1]P)\n");
     Plain_ate_pairing(&test2,&s2Q,&s1P);
     printf("Miller's Algo. (Plain-ate) : %.2f[ms]\n",MILLER_PLAINATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_PLAIN);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_PLAIN);
     Fp12_printf(&test2,"");
     printf("\n\n");
     
@@ -4955,9 +4791,9 @@ void test_plain_ate_pairing(){
     printf("plain_ate([s1]Q,[s2]P)\n");
     Plain_ate_pairing(&test3,&s1Q,&s2P);
     printf("Miller's Algo. (Plain-ate) : %.2f[ms]\n",MILLER_PLAINATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_PLAIN);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_PLAIN);
     Fp12_printf(&test3,"");
     printf("\n\n");
     
@@ -5006,7 +4842,7 @@ void test_opt_ate_pairing(){
     gmp_randinit_default (state);
     gmp_randseed_ui(state,(unsigned long)time(NULL));
     mpz_urandomm(s1,state,order);
-	mpz_urandomm(s2,state,order);
+    mpz_urandomm(s2,state,order);
     mpz_mul(s12,s1,s2);
     mpz_mod(s12,s12,order);
     
@@ -5027,9 +4863,9 @@ void test_opt_ate_pairing(){
     Opt_ate_pairing(&Z,&Q,&P);
     Fp12_pow(&test1,&Z,s12);
     printf("Miller's Algo. (Opt-ate) : %.2f[ms]\n",MILLER_OPTATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_OPT);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_OPT);
     Fp12_printf(&test1,"");
     printf("\n\n");
     
@@ -5038,9 +4874,9 @@ void test_opt_ate_pairing(){
     printf("opt_ate([s2]Q,[s1]P)\n");
     Opt_ate_pairing(&test2,&s2Q,&s1P);
     printf("Miller's Algo. (Opt-ate) : %.2f[ms]\n",MILLER_OPTATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_OPT);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_OPT);
     Fp12_printf(&test2,"");
     printf("\n\n");
     
@@ -5049,9 +4885,9 @@ void test_opt_ate_pairing(){
     printf("opt_ate([s1]Q,[s2]P)\n");
     Opt_ate_pairing(&test3,&s1Q,&s2P);
     printf("Miller's Algo. (Opt-ate) : %.2f[ms]\n",MILLER_OPTATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_OPT);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_OPT);
     Fp12_printf(&test3,"");
     printf("\n\n");
     
@@ -5100,7 +4936,7 @@ void test_x_ate_pairing(){
     gmp_randinit_default (state);
     gmp_randseed_ui(state,(unsigned long)time(NULL));
     mpz_urandomm(s1,state,order);
-	mpz_urandomm(s2,state,order);
+    mpz_urandomm(s2,state,order);
     mpz_mul(s12,s1,s2);
     mpz_mod(s12,s12,order);
     
@@ -5121,9 +4957,9 @@ void test_x_ate_pairing(){
     X_ate_pairing(&Z,&Q,&P);
     Fp12_pow(&test1,&Z,s12);
     printf("Miller's Algo. (X-ate) : %.2f[ms]\n",MILLER_XATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_OPT);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_OPT);
     Fp12_printf(&test1,"");
     printf("\n\n");
     
@@ -5132,9 +4968,9 @@ void test_x_ate_pairing(){
     printf("x_ate([s2]Q,[s1]P)\n");
     X_ate_pairing(&test2,&s2Q,&s1P);
     printf("Miller's Algo. (X-ate) : %.2f[ms]\n",MILLER_XATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_OPT);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_OPT);
     Fp12_printf(&test2,"");
     printf("\n\n");
     
@@ -5143,9 +4979,9 @@ void test_x_ate_pairing(){
     printf("x_ate([s1]Q,[s2]P)\n");
     X_ate_pairing(&test3,&s1Q,&s2P);
     printf("Miller's Algo. (X-ate) : %.2f[ms]\n",MILLER_XATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_EASY);
+    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_HARD_OPT);
+    printf("Final Exp. (total) : %.2f[ms]\n",FINALEXP_EASY+FINALEXP_HARD_OPT);
     Fp12_printf(&test3,"");
     printf("\n\n");
     
@@ -5217,7 +5053,7 @@ void test_G1_SCM(){
     printf("\n\n");
     
     if(Fp12_cmp(&test1.x,&test2.x)==0 && Fp12_cmp(&test1.y,&test2.y)==0
-    && Fp12_cmp(&test1.x,&test3.x)==0 && Fp12_cmp(&test1.y,&test3.y)==0){
+       && Fp12_cmp(&test1.x,&test3.x)==0 && Fp12_cmp(&test1.y,&test3.y)==0){
         printf("success\n\n");
     }else{
         printf("failed\n\n");
@@ -5285,8 +5121,8 @@ void test_G2_SCM(){
     printf("\n\n");
     
     if(Fp12_cmp(&test1.x,&test2.x)==0 && Fp12_cmp(&test1.y,&test2.y)==0
-    && Fp12_cmp(&test1.x,&test3.x)==0 && Fp12_cmp(&test1.y,&test3.y)==0
-    && Fp12_cmp(&test1.x,&test4.x)==0 && Fp12_cmp(&test1.y,&test4.y)==0){
+       && Fp12_cmp(&test1.x,&test3.x)==0 && Fp12_cmp(&test1.y,&test3.y)==0
+       && Fp12_cmp(&test1.x,&test4.x)==0 && Fp12_cmp(&test1.y,&test4.y)==0){
         printf("success\n\n");
     }else{
         printf("failed\n\n");
@@ -5377,169 +5213,197 @@ void test_G3_EXP(){
     Fp12_clear(&test4);
 }
 
-void compare_pairings(){
+
+void computation_time(){
     printf("====================================================================================\n");
-    printf("Ate-based pairing\n\n");
-    EFp12 P,Q;
+    printf("Computation time\n\n");
+    int count;
+    float AVE_MILLER_PLAINATE=0,AVE_MILLER_OPTATE=0,AVE_MILLER_XATE=0;
+    float AVE_FINALEXP_EASY=0,AVE_FINALEXP_HARD_OPT=0;
+    EFp12 P,Q,tmp_P,tmp_Q;
     EFp12_init(&P);
     EFp12_init(&Q);
-    Fp12 Z;
+    EFp12_init(&tmp_P);
+    EFp12_init(&tmp_Q);
+    Fp12 Z,tmp_Z;
     Fp12_init(&Z);
-    EFp2 twisted_Q;
-    EFp2_init(&twisted_Q);
+    Fp12_init(&tmp_Z);
+    gmp_randstate_t state;
+    gmp_randinit_default(state);
+    gmp_randseed_ui(state,(unsigned long)time(NULL));
+    mpz_t scalar;
+    mpz_init(scalar);
     
-    printf("generating rational point P in G1...\n\n");
+    printf("generating rational point P in G1\n\n");
     EFp12_generate_G1(&P);
-    //EFp12_printf(&P,"P\n");
-    //printf("\n\n");
-    printf("generating rational point Q in G2...\n\n");
+    EFp12_printf(&P,"P\n");
+    printf("\n\n");
+    
+    printf("generating rational point Q in G2\n\n");
     EFp12_generate_G2(&Q);
-    //EFp12_printf(&Q,"Q\n");
-    //printf("\n\n");
+    EFp12_printf(&Q,"Q\n");
+    printf("\n\n");
     
-    /*printf("------------------------------------------------------------------------------------\n");
-    printf("Plain-ate pairing\n\n");
-    Plain_ate_pairing(&Z,&Q,&P);
-    printf("Miller's Algo. (Plain-ate) : %.2f[ms]\n",MILLER_PLAINATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Pairing (total) : %.2f[ms]\n",MILLER_PLAINATE+FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
-    printf("\n");*/
-    
-    printf("------------------------------------------------------------------------------------\n");
-    printf("Opt-ate pairing\n\n");
-    Opt_ate_pairing(&Z,&Q,&P);
-    printf("Miller's Algo. (Opt-ate)   : %.2f[ms]\n",MILLER_OPTATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Pairing (total) : %.2f[ms]\n",MILLER_OPTATE+FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Computing...\n");
+    count=0;
+    while(count<100){
+        printf("%d\n",count);
+        //opt
+        Opt_ate_pairing(&Z,&Q,&P);
+        AVE_MILLER_OPTATE=AVE_MILLER_OPTATE+MILLER_OPTATE;
+        
+        X_ate_pairing(&Z,&Q,&P);
+        AVE_MILLER_XATE=AVE_MILLER_XATE+MILLER_XATE;
+        
+        //final_exp
+        AVE_FINALEXP_EASY=AVE_FINALEXP_EASY+FINALEXP_EASY;
+        AVE_FINALEXP_HARD_OPT=AVE_FINALEXP_HARD_OPT+FINALEXP_HARD_OPT;
+        
+        count++;
+    }
     printf("\n");
     
-    printf("------------------------------------------------------------------------------------\n");
-    printf("X-ate pairing\n\n");
-    X_ate_pairing(&Z,&Q,&P);
-    printf("Miller's Algo. (X-ate)     : %.2f[ms]\n",MILLER_XATE);
-    printf("Final Exp. (easy)  : %.2f[ms]\n",FINALEXP_OPT_EASY);
-    printf("Final Exp. (hard)  : %.2f[ms]\n",FINALEXP_OPT_HARD);
-    printf("Pairing (total) : %.2f[ms]\n",MILLER_XATE+FINALEXP_OPT_EASY+FINALEXP_OPT_HARD);
+    printf("Miller's Algo. (opt-ate)   : %.2f[ms]\n",AVE_MILLER_OPTATE/100);
+    printf("Miller's Algo. (x-ate)     : %.2f[ms]\n",AVE_MILLER_XATE/100);
+    
     printf("\n");
-    
-    /*printf("------------------------------------------------------------------------------------\n");
-    printf("Sextic twist\n\n");
-    gettimeofday(&tv_start,NULL);
-    EFp12_to_EFp2(&twisted_Q,&Q);
-    gettimeofday(&tv_end,NULL);
-    printf("EFp12 to EFp2     : %.2f[us]\n",timedifference_usec(tv_start,tv_end));
-    
-    gettimeofday(&tv_start,NULL);
-    EFp2_to_EFp12(&Q,&twisted_Q);
-    gettimeofday(&tv_end,NULL);
-    printf("EFp2 to EFp12     : %.2f[us]\n",timedifference_usec(tv_start,tv_end));
-    */
+    printf("Final Exp. Optimal (easy) : %.2f[ms]\n",AVE_FINALEXP_EASY/100);
+    printf("Final Exp. Optimal (hard) : %.2f[ms]\n",AVE_FINALEXP_HARD_OPT/100);
     
     EFp12_clear(&P);
     EFp12_clear(&Q);
+    EFp12_clear(&tmp_P);
+    EFp12_clear(&tmp_Q);
     Fp12_clear(&Z);
+    Fp12_clear(&tmp_Z);
+    mpz_clear(scalar);
 }
 
-void operation_cost(){
+void computation_cost(){
     printf("====================================================================================\n");
-    printf("Operation cost\n\n");
-    Fp2 tmp1_Fp2,tmp2_Fp2;
-    Fp2_init(&tmp1_Fp2);
-    Fp2_init(&tmp2_Fp2);
-    Fp6 tmp1_Fp6,tmp2_Fp6;
-    Fp6_init(&tmp1_Fp6);
-    Fp6_init(&tmp2_Fp6);
-    Fp12 tmp1_Fp12,tmp2_Fp12;
-    Fp12_init(&tmp1_Fp12);
-    Fp12_init(&tmp2_Fp12);
-    
-    gmp_randinit_default (state);
+    printf("Pairing operations\n\n");
+    EFp12 P,Q,tmp_P,tmp_Q;
+    EFp12_init(&P);
+    EFp12_init(&Q);
+    EFp12_init(&tmp_P);
+    EFp12_init(&tmp_Q);
+    Fp12 Z,tmp_Z;
+    Fp12_init(&Z);
+    Fp12_init(&tmp_Z);
+    gmp_randstate_t state;
+    gmp_randinit_default(state);
     gmp_randseed_ui(state,(unsigned long)time(NULL));
-    Fp2_set_random(&tmp1_Fp2,state);
-    Fp6_set_random(&tmp1_Fp6,state);
-    Fp12_set_random(&tmp1_Fp12,state);
-    Fp2_set_random(&tmp2_Fp2,state);
-    Fp6_set_random(&tmp2_Fp6,state);
-    Fp12_set_random(&tmp2_Fp12,state);
+    mpz_t scalar;
+    mpz_init(scalar);
     
-    printf("------------------------------------------------------------------------------------\n");
-    printf("Extension field Fp2\n\n");
-    Init_Fp_Cost(&Fp_cost);
-    Fp2_mul(&tmp1_Fp2,&tmp1_Fp2,&tmp2_Fp2);
-    Print_Fp_Cost(&Fp_cost,"Fp2_mul\n");
+    printf("generating rational point P in G1\n\n");
+    EFp12_generate_G1(&P);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp2_sqr(&tmp1_Fp2,&tmp2_Fp2);
-    Print_Fp_Cost(&Fp_cost,"Fp2_sqr\n");
+    printf("generating rational point Q in G2\n\n");
+    EFp12_generate_G2(&Q);
     
+    //opt_ate
     Init_Fp_Cost(&Fp_cost);
-    Fp2_inv(&tmp1_Fp2,&tmp2_Fp2);
-    Print_Fp_Cost(&Fp_cost,"Fp2_inv\n");
+    Miller_algo_for_opt_ate(&Z,&P,&Q);
+    Print_Fp_Cost(&Fp_cost,"Opt-ate\n");
     
-    printf("------------------------------------------------------------------------------------\n");
-    printf("Extension field Fp6\n\n");
+    //x_ate
     Init_Fp_Cost(&Fp_cost);
-    Fp6_mul(&tmp1_Fp6,&tmp1_Fp6,&tmp2_Fp6);
-    Print_Fp_Cost(&Fp_cost,"Fp6_mul\n");
+    Miller_algo_for_x_ate(&Z,&P,&Q);
+    Print_Fp_Cost(&Fp_cost,"X-ate\n");
     
     Init_Fp_Cost(&Fp_cost);
-    Fp6_sqr(&tmp1_Fp6,&tmp2_Fp6);
-    Print_Fp_Cost(&Fp_cost,"Fp6_sqr\n");
-    
+    Final_exp_easy(&Z,&Z);
+    Print_Fp_Cost(&Fp_cost,"Final exp (easy)\n");
     Init_Fp_Cost(&Fp_cost);
-    Fp6_inv(&tmp1_Fp6,&tmp2_Fp6);
-    Print_Fp_Cost(&Fp_cost,"Fp6_inv\n");
+    Final_exp_hard_optimal(&Z,&Z);
+    Print_Fp_Cost(&Fp_cost,"Final exp Plain (hard)\n");
+    printf("\n");
     
-    printf("------------------------------------------------------------------------------------\n");
-    printf("Extension field Fp12\n\n");
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_mul(&tmp1_Fp12,&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_mul\n");
+    EFp12_clear(&P);
+    EFp12_clear(&Q);
+    EFp12_clear(&tmp_P);
+    EFp12_clear(&tmp_Q);
+    Fp12_clear(&Z);
+    Fp12_clear(&tmp_Z);
+    mpz_clear(scalar);
+}
+
+void operation_ratio(){
+    printf("====================================================================================\n");
+    printf("Operation ratio\n\n");
+    struct timeval add_start,add_end,mul_start,mul_end,sqr_start,sqr_end,inv_start,inv_end;
+    unsigned long int count;
+    float AVE_ADD=0,AVE_MUL=0,AVE_SQR=0,AVE_INV=0;
+    float ADD_MUL,ADD_SQR,ADD_INV;
+    Fp tmp1,tmp2;
+    Fp_init(&tmp1);
+    Fp_init(&tmp2);
+    gmp_randstate_t state;
+    gmp_randinit_default(state);
+    gmp_randseed_ui(state,(unsigned long)time(NULL));
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_sqr(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_sqr\n");
+    Fp_set_random(&tmp1,state);
+    Fp_set_random(&tmp2,state);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_inv(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_inv\n");
+    //addition
+    printf("test : add\n");
+    count=0;
+    gettimeofday(&add_start,NULL);
+    while(count<10000000){
+        Fp_add(&tmp1,&tmp1,&tmp2);
+        count++;
+    }
+    gettimeofday(&add_end,NULL);
+    AVE_ADD=timedifference_msec(add_start,add_end);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_frobenius_map_p1(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_frobenius_map_p1\n");
+    //mul
+    printf("test : mul\n");
+    count=0;
+    gettimeofday(&mul_start,NULL);
+    while(count<10000000){
+        Fp_mul(&tmp1,&tmp1,&tmp2);
+        count++;
+    }
+    gettimeofday(&mul_end,NULL);
+    AVE_MUL=timedifference_msec(mul_start,mul_end);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_frobenius_map_p2(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_frobenius_map_p2\n");
+    //sqr
+    printf("test : sqr\n");
+    count=0;
+    gettimeofday(&sqr_start,NULL);
+    while(count<10000000){
+        Fp_mul(&tmp1,&tmp2,&tmp2);
+        count++;
+    }
+    gettimeofday(&sqr_end,NULL);
+    AVE_SQR=timedifference_msec(sqr_start,sqr_end);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_frobenius_map_p3(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_frobenius_map_p3\n");
+    //inv
+    printf("test : inv\n");
+    count=0;
+    gettimeofday(&inv_start,NULL);
+    while(count<10000000){
+        Fp_inv(&tmp1,&tmp2);
+        count++;
+    }
+    gettimeofday(&inv_end,NULL);
+    AVE_INV=timedifference_msec(inv_start,inv_end);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_frobenius_map_p4(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_frobenius_map_p4\n");
+    printf("10000000 trials\n");
+    printf("ADD : %.2f[ms]\n",AVE_ADD);
+    printf("MUL : %.2f[ms]\n",AVE_MUL);
+    printf("SQR : %.2f[ms]\n",AVE_SQR);
+    printf("INV : %.2f[ms]\n",AVE_INV);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_frobenius_map_p6(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_frobenius_map_p6\n");
+    ADD_MUL=AVE_MUL/AVE_ADD;
+    ADD_SQR=AVE_SQR/AVE_ADD;
+    ADD_INV=AVE_INV/AVE_ADD;
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_frobenius_map_p8(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_frobenius_map_p8\n");
+    printf("ratio\n");
+    printf("ADD : MUL : SQR : INV = 1 : %.2f : %.2f : %.2f\n",ADD_MUL,ADD_SQR,ADD_INV);
     
-    Init_Fp_Cost(&Fp_cost);
-    Fp12_frobenius_map_p10(&tmp1_Fp12,&tmp2_Fp12);
-    Print_Fp_Cost(&Fp_cost,"Fp12_frobenius_map_p10\n");
-    
-    
-    Fp2_clear(&tmp1_Fp2);
-    Fp6_clear(&tmp1_Fp6);
-    Fp12_clear(&tmp1_Fp12);
-    Fp2_clear(&tmp2_Fp2);
-    Fp6_clear(&tmp2_Fp6);
-    Fp12_clear(&tmp2_Fp12);
+    Fp_clear(&tmp1);
+    Fp_clear(&tmp2);
 }
 
